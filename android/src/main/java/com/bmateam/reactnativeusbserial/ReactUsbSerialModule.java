@@ -125,7 +125,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(ReadableMap deviceObject,
+    public void writeInDeviceAsync(String deviceId,
                                    String value,
                                    Promise p) {
 
@@ -190,8 +190,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         String id = generateId();
         UsbSerialDevice usd = new UsbSerialDevice(port);
         WritableMap map = Arguments.createMap();
-        byte[] data = {0x80, 0x27, 0x05, 0x52};
-        port.writeAsync(data);
+        byte[] data = hexStringToByteArray("80270552");
+        port.write(data, 400);
         // Add UsbSerialDevice to the usbSerialDriverDict map
         usbSerialDriverDict.put(id, usd);
 
