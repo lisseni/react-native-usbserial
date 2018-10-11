@@ -100,7 +100,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void test(Promise p){
-        p.resolve('eeee');
+        p.resolve(@"eeee");
     }
     
     @ReactMethod
