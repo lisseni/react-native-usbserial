@@ -45,6 +45,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     private SerialInputOutputManager mSerialIoManager;
 
+    private UsbSerialPort mSerialPort;
+
     private final SerialInputOutputManager.Listener mListener =
             new SerialInputOutputManager.Listener() {
                 @Override
@@ -87,7 +89,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                 map.putInt("deviceId", device.getDeviceId());
                 map.putInt("productId", device.getProductId());
                 map.putInt("vendorId", device.getVendorId());
-                map.putString("deviceName", device.getDeviceName());
 
                 deviceArray.pushMap(map);
             }
@@ -182,17 +183,17 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
 
         // Most have just one port (port 0).
-        UsbSerialPort port = driver.getPorts().get(0);
+        mSerialPort = driver.getPorts().get(0);
 
 
-        port.open(connection);
-        port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+        mSerialPort.open(connection);
+        mSerialPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
         String id = generateId();
-        UsbSerialDevice usd = new UsbSerialDevice(port);
+        UsbSerialDevice usd = new UsbSerialDevice(mSerialPort);
         WritableMap map = Arguments.createMap();
         byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
-        port.write(data, 400);
+        mSerialPort.write(data, 400);
         // Add UsbSerialDevice to the usbSerialDriverDict map
         usbSerialDriverDict.put(id, usd);
 
