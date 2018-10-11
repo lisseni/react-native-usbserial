@@ -191,7 +191,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         UsbSerialDevice usd = new UsbSerialDevice(port);
         WritableMap map = Arguments.createMap();
         byte[] data = {0x80, 0x27, 0x05, 0x52};
-        port.writeAsync(data)
+        port.writeAsync(data);
         // Add UsbSerialDevice to the usbSerialDriverDict map
         usbSerialDriverDict.put(id, usd);
 
