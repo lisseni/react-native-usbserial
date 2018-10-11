@@ -47,6 +47,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     private UsbSerialPort mSerialPort;
 
+    private boolean ConnectionState = false;
+
     private final SerialInputOutputManager.Listener mListener =
             new SerialInputOutputManager.Listener() {
                 @Override
@@ -114,7 +116,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
             if (manager.hasPermission(driver.getDevice())) {
                 WritableMap usd = createUsbSerialDevice(manager, driver);
-
+                ConnectionState = true;
                 p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
@@ -131,13 +133,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                                    Promise p) {
 
         try {
-            UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-
-            if (usd == null) {
-                throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+            if (ConnectionState){
+              byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
+              mSerialPort.write(data, 400);
+              p.resolve(ConnectionState)
             }
-            //p.resolve(value);
-            usd.writeAsync(value, p);
+            else{
+              p.reject(new Exception("Port is closed"));
+            }
         } catch (Exception e) {
             p.reject(e);
         }
@@ -192,8 +195,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         String id = generateId();
         UsbSerialDevice usd = new UsbSerialDevice(mSerialPort);
         WritableMap map = Arguments.createMap();
-        byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
-        mSerialPort.write(data, 400);
+
+
         // Add UsbSerialDevice to the usbSerialDriverDict map
         usbSerialDriverDict.put(id, usd);
 
