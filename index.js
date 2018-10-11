@@ -25,7 +25,8 @@ export class UsbSerial {
         });
     }
 
-    writeInDeviceAsync(value){
-        return UsbSerialModule.writeInDeviceAsync(value);
+    write(value){
+      throw 'Unfortunately only android is supported';
+        //return UsbSerialModule.writeInDeviceAsync(value);
     }
 }
