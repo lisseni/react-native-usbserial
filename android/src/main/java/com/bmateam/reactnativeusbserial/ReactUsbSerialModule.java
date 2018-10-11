@@ -130,7 +130,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                                    Promise p) {
 
         try {
-            Int r =7;
+            int r =7;
             p.resolve(r);
 
         } catch (Exception e) {
