@@ -184,13 +184,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         // Most have just one port (port 0).
         UsbSerialPort port = driver.getPorts().get(0);
 
+
         port.open(connection);
         port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
         String id = generateId();
         UsbSerialDevice usd = new UsbSerialDevice(port);
         WritableMap map = Arguments.createMap();
-        byte[] data = hexStringToByteArray("80270552");
+        byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
         port.write(data, 400);
         // Add UsbSerialDevice to the usbSerialDriverDict map
         usbSerialDriverDict.put(id, usd);
