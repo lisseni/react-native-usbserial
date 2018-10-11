@@ -20,9 +20,13 @@ export class UsbSerial {
     }
 
     openDeviceAsync(deviceObject = {}) {
-        return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-            return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        });
+       return new Promise((resolve)=>{
+          return resolve('dfgdgd');
+        //return USBSerialModule.writeInDeviceAsync(deviceId, value);
+        });  
+        //return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
+        //    return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
+        //});
     }
   
     writeInDeviceAsync(deviceId, value) {
