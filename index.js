@@ -24,11 +24,9 @@ export class UsbSerial {
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
-  
-    test() {
-        return UsbSerialModule.test();
-        return USBSerialModule.writeInDeviceAsync(deviceId, value);
-               
+
+    writeInDeviceAsync(deviceId, value){
+        return UsbSerialModule.writeInDeviceAsync(deviceId, value);
     }
 }
 

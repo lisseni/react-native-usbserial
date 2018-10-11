@@ -99,8 +99,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public String test(){
-       return "eeee";
+    public void test(Promise p){
+       p.resolve("eeee");
     }
     
     @ReactMethod
@@ -135,8 +135,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (usd == null) {
                 throw new Exception(String.format("No device opened for the id '%s'", deviceId));
             }
-
-            usd.writeAsync(value, p);
+            p.resolve()
+            //usd.writeAsync(value, p);
         } catch (Exception e) {
             p.reject(e);
         }
