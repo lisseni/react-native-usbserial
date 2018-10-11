@@ -26,8 +26,7 @@ export class UsbSerial {
     }
   
     test(deviceId, value) {
-        let r = "dfgdgd";
-          return r ;
+        return UsbSerialModule.test();
         //return USBSerialModule.writeInDeviceAsync(deviceId, value);
                
     }
