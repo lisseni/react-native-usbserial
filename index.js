@@ -19,21 +19,17 @@ export class UsbSerial {
         return UsbSerialModule.getDeviceListAsync();
     }
 
-    openDeviceAsync(deviceObject = {}) {
-       return new Promise((resolve)=>{
-          return resolve('dfgdgd');
-        //return USBSerialModule.writeInDeviceAsync(deviceId, value);
-        });  
-        //return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-        //    return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        //});
+    openDeviceAsync(deviceObject = {}) {       
+        return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
+            return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
+        });
     }
   
     writeInDeviceAsync(deviceId, value) {
-        return new Promise((resolve)=>{
-          return resolve('dfgdgd');
+        
+          return ('dfgdgd');
         //return USBSerialModule.writeInDeviceAsync(deviceId, value);
-        })        
+               
     }
 }
 
