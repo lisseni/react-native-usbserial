@@ -26,7 +26,7 @@ export class UsbSerial {
     }
   
   writeInDeviceAsync(deviceId, value) {
-        return USBSerialModule.writeInDeviceAsync(deviceId, value)
+        return USBSerialModule.writeInDeviceAsync(deviceId, value);
     }
 }
 
