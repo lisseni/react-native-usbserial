@@ -130,11 +130,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                                    Promise p) {
 
         try {
-            UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+            //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
-            if (usd == null) {
-                throw new Exception(String.format("No device opened for the id '%s'", deviceId));
-            }
+            //if (usd == null) {
+            //  throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+            //}
             p.resolve(value);
             //usd.writeAsync(value, p);
         } catch (Exception e) {
