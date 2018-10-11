@@ -99,6 +99,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void test(){
+        String res = "rrrr";
+        return res;
+    }
+    
+    @ReactMethod
     public void openDeviceAsync(ReadableMap deviceObject, Promise p) {
 
         try {
