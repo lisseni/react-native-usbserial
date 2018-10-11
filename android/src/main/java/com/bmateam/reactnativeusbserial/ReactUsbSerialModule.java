@@ -128,8 +128,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(String deviceId,
-                                   String value,
+    public void writeInDeviceAsync(String value,
                                    Promise p) {
 
         try {

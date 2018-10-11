@@ -19,14 +19,13 @@ export class UsbSerial {
         return UsbSerialModule.getDeviceListAsync();
     }
 
-    openDeviceAsync(deviceObject = {}) {       
+    openDeviceAsync(deviceObject = {}) {
         return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
 
-    writeInDeviceAsync(deviceId, value){
-        return UsbSerialModule.writeInDeviceAsync(deviceId, value);
+    writeInDeviceAsync(value){
+        return UsbSerialModule.writeInDeviceAsync(value);
     }
 }
-
