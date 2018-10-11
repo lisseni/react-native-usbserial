@@ -26,9 +26,11 @@ export class UsbSerial {
     }
   
   writeInDeviceAsync(deviceId, value) {
-        alert(deviceId);
-        return reject('dfgdgd');
+    return new Promise((resolve)=>{
+        return resolve('dfgdgd');
         //return USBSerialModule.writeInDeviceAsync(deviceId, value);
+    })
+        
     }
 }
 
