@@ -136,8 +136,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (ConnectionState){
               byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
               offset = mSerialPort.write(data, 400);
-              UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-              p.resolve(usd);
+              WritableMap temp = Arguments.createMap();
+              map.putInt("offset", offset);
+              p.resolve(temp);
             }
             else{
               p.reject(new Exception("Port is closed"));
