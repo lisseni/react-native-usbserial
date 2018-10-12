@@ -137,7 +137,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
               offset = mSerialPort.write(data, 400);
               WritableMap temp = Arguments.createMap();
-              map.putInt("offset", offset);
+              temp.putInt("offset", offset);
               p.resolve(temp);
             }
             else{
