@@ -28,8 +28,13 @@ export class UsbSerial {
     write(eee){
         return UsbSerialModule.writeInDeviceAsync(eee).then((res)=>{
           return new Promise((resolve, reject)=>{
-            resolve(res);
+            return resolve(res);
           });          
+        });
+        .catch((res)=>{
+          return new Promise((resolve, reject)=>{
+            return reject(res);
+          });
         });
     }
 }
