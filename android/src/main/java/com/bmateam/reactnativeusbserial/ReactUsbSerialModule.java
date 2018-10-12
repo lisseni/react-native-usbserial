@@ -129,10 +129,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
+    public void writeInDeviceAsync(/*WritableArray cmd, */Promise p) {
         int offset = 0;
         try {
             if (ConnectionState){
+              WritableArray cmd = Arguments.createArray();
+              cmd.pushInt(0x80);
+              cmd.pushInt(0x27);
+              cmd.pushInt(0x05);
+              cmd.pushInt(0x52);
               //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
               byte[] data = new byte[cmd.size()];
               for (int i =0; i< cmd.size(); i++) {
