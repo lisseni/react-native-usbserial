@@ -139,7 +139,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               p.resolve(offset);
             }
             else{
-              p.reject('Port is closed');
+              p.reject("Port is closed");
             }
 
         } catch (Exception e) {
