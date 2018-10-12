@@ -130,7 +130,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
-        int offset;
+        int offset = 0;
         try {
             if (ConnectionState){
               //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
@@ -139,12 +139,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   data[i] = (byte)cmd.getInt(i);
               }
 
-              offset = mSerialPort.write(data, 400);
-              p.resolve(offset);
+              //offset = mSerialPort.write(data, 400);
+              //p.resolve(offset);
             }
-            else{
-              p.reject("Port is closed");
-            }
+             p.resolve(offset);
+            // else{
+            //   p.reject("Port is closed");
+            // }
 
         } catch (Exception e) {
             p.reject(e);
