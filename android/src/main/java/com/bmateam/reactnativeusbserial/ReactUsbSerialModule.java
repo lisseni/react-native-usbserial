@@ -144,7 +144,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   data[i] = (byte)cmd.getInt(i);
               }
 
-              //offset = mSerialPort.write(data, 400);
+              offset = mSerialPort.write(data, 400);
               //p.resolve(offset);
             }
              p.resolve(offset);
