@@ -134,8 +134,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         try {
             if (ConnectionState){
               //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
-              byte[] data = new byte[cmd.length()];
-              for (int i =0; i< cmd.length(); i++) {
+              byte[] data = new byte[cmd.size()];
+              for (int i =0; i< cmd.size(); i++) {
                   data[i] = (byte)cmd.getInt(i);
               }
 
