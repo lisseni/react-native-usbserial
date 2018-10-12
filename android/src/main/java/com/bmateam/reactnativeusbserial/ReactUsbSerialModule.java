@@ -129,13 +129,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void writeInDeviceAsync(String value,
+                                   String deviceId,
                                    Promise p) {
-
+        int offset;
         try {
             if (ConnectionState){
               byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
-              mSerialPort.write(data, 400);
-              //p.resolve(ConnectionState);
+              offset = mSerialPort.write(data, 400);
+              UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+              p.resolve(usd);
             }
             else{
               p.reject(new Exception("Port is closed"));
