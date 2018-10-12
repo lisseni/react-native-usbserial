@@ -145,7 +145,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
               offset = mSerialPort.write(data, 400);
-              p.resolve(test);
+              p.resolve(offset);
             }else{
               p.reject("Port is closed");
             }
