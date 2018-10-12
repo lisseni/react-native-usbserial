@@ -25,7 +25,7 @@ export class UsbSerial {
         });
     }
 
-    write(cmd){
+    write(cmd = []){
         return UsbSerialModule.writeInDeviceAsync(cmd);
     }
 }
