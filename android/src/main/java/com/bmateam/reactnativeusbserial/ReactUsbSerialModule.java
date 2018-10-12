@@ -117,8 +117,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (manager.hasPermission(driver.getDevice())) {
                 WritableMap usd = createUsbSerialDevice(manager, driver);
                 ConnectionState = true;
-                writeInDeviceAsync();
-                //p.resolve(usd);
+                byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
+                mSerialPort.write(data, 400);
+                p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
             }
