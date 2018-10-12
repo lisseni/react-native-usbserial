@@ -26,7 +26,6 @@ export class UsbSerial {
     }
 
     write(eee){
-      console.warn(cmd)
         return UsbSerialModule.writeInDeviceAsync(eee);
     }
 }
