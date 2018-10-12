@@ -20,6 +20,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.hoho.android.usbserial.driver.UsbSerialDriver;
@@ -117,8 +118,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (manager.hasPermission(driver.getDevice())) {
                 WritableMap usd = createUsbSerialDevice(manager, driver);
                 ConnectionState = true;
-                byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
-                mSerialPort.write(data, 400);
                 p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
@@ -130,11 +129,16 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(Promise p) {
+    public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
         int offset;
         try {
             if (ConnectionState){
-              byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
+              //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
+              byte[] data = new byte[cmd.length()];
+              for (int i =0; i< cmd.length(); i++) {
+                  data[i] = (byte)Array.getInt(i);
+              }
+
               offset = mSerialPort.write(data, 400);
               p.resolve(offset);
             }
