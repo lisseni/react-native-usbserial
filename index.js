@@ -25,8 +25,8 @@ export class UsbSerial {
         });
     }
 
-    write(eee){
-        return UsbSerialModule.writeInDeviceAsync(eee).then((res)=>{
+    write(cmd){
+        return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
           return new Promise((resolve, reject)=>{
             return resolve(res);
           })
