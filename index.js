@@ -23,7 +23,7 @@ export class UsbSerial {
         return UsbSerialModule.list();
     }
 
-    open(deviceObject = {}) {
+    openDeviceAsync(deviceObject = {}) {
         return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
