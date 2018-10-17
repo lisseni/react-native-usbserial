@@ -12,7 +12,7 @@ buildscript {
 allprojects {
   repositories {
     mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    //maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
   }
 }
 
@@ -41,5 +41,5 @@ repositories {
 
 dependencies {
   compile "com.facebook.react:react-native:0.19.+"
-  compile 'com.hoho.android:usb-serial-for-android:0.2.0-SNAPSHOT@aar'
+  //compile 'com.hoho.android:usb-serial-for-android:0.2.0-SNAPSHOT@aar'
 }
