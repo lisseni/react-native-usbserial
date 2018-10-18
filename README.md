@@ -23,7 +23,7 @@ To integrate it with your android application you also need to add these followi
 repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
-```
+```  
 
 ## Usage
 
