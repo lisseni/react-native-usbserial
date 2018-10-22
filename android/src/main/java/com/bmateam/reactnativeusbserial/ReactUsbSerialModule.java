@@ -148,7 +148,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                 p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
-                p.reject('need Permission')
+                p.reject('need Permission');
             }
 
         } catch (Exception e) {
