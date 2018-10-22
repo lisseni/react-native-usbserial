@@ -156,7 +156,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
+    public void writeInDeviceAsync(ReadableArray cmdddd, Promise p) {
         int offset = 0;
         try {
             if (ConnectionState){
