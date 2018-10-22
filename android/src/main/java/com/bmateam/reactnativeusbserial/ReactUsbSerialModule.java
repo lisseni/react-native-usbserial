@@ -160,11 +160,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         int offset = 0;
         try {
             if (ConnectionState){
-              // WritableArray cmd = Arguments.createArray();
-              // cmd.pushInt(0x80);
-              // cmd.pushInt(0x27);
-              // cmd.pushInt(0x05);
-              // cmd.pushInt(0x52);
+              WritableArray cmd = Arguments.createArray();
+              cmd.pushInt(0xC0);
+              cmd.pushInt(0x46);
+              cmd.pushInt(0x0C);
+              cmd.pushInt(0x02);
+              cmd.pushInt(0x18);
+              cmd.pushInt(0x00);
+              cmd.pushInt(0xd2);
               //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
               byte[] data = new byte[cmd.size()];
               for (int i =0; i< cmd.size(); i++) {
