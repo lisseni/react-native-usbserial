@@ -148,6 +148,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                 p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
+                p.reject('need Permission')
             }
 
         } catch (Exception e) {
@@ -156,18 +157,18 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void writeInDeviceAsync(ReadableArray cmdddd, Promise p) {
+    public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
         int offset = 0;
         try {
             if (ConnectionState){
-              WritableArray cmd = Arguments.createArray();
-              cmd.pushInt(0xC0);
-              cmd.pushInt(0x46);
-              cmd.pushInt(0x0C);
-              cmd.pushInt(0x02);
-              cmd.pushInt(0x18);
-              cmd.pushInt(0x00);
-              cmd.pushInt(0xd2);
+              // WritableArray cmd = Arguments.createArray();
+              // cmd.pushInt(0xC0);
+              // cmd.pushInt(0x46);
+              // cmd.pushInt(0x0C);
+              // cmd.pushInt(0x02);
+              // cmd.pushInt(0x18);
+              // cmd.pushInt(0x00);
+              // cmd.pushInt(0xd2);
               //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
               byte[] data = new byte[cmd.size()];
               for (int i =0; i< cmd.size(); i++) {
