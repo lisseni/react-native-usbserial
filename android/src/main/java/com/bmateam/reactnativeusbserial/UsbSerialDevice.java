@@ -11,7 +11,7 @@ public class UsbSerialDevice {
 
     public UsbSerialDevice(UsbSerialPort port) {
         this.port = port;
-        private static final int SERIAL_TIMEOUT = 1000;
+        
     }
 
     public void writeAsync(String value, Promise promise) {

@@ -178,7 +178,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (manager.hasPermission(driver.getDevice())) {
                 WritableMap usd = createUsbSerialDevice(manager, driver);
                 ConnectionState = true;
-                Log.v("BATROBOT", "opend")
+                Log.v("BATROBOT", "opend");
                 p.resolve(usd);
             } else {
                 requestUsbPermission(manager, driver.getDevice(), p);
@@ -249,7 +249,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     private void sendEvent(String data) {
       WritableMap params = Arguments.createMap();
       params.putString("data", data);
-      Log.v('BATROBOT emit event')
+      Log.v('BATROBOT emit event');
       reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
   }
     // public void emitNewData(byte[] data) {
