@@ -47,7 +47,7 @@ export class UsbSerial {
       UsbSerialModule.readDeviceAsync(deviceId);
     }
 
-    DeviceEventEmitter.addListener('newData', function(e: Event) {
-    // handle event.
-    });
+    // DeviceEventEmitter.addListener('newData', function(e: Event) {
+    // // handle event.
+    // });
 }
