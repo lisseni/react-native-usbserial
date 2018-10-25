@@ -17,7 +17,7 @@ export class UsbSerial {
     }
 
     getDeviceListAsync() {
-        console.log('BATroobot getDeviceListAsyn')
+        console.log('BATrobot getDeviceListAsyn')
         return UsbSerialModule.getDeviceListAsync();
     }
 
