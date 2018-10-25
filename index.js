@@ -35,7 +35,9 @@ export class UsbSerial {
           //     console.warn('BATROBOT test');
           // });
           if(this.eventListener) this.eventListener.remove();
-            this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', handler);
+            this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+                console.warn('BATROBOT UsbSerialEvent');
+          });
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
@@ -54,6 +56,7 @@ export class UsbSerial {
         });
     }
     readOn(deviceId){
+      UsbSerialModule.startIoManager(deviceId);
       UsbSerialModule.readDeviceAsync(deviceId);
 
     }
