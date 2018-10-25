@@ -67,7 +67,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                 public void onNewData(final byte[] data) {
                   try{
               Log.v("BATROBOT", "Shazam");
-              sendEvent(String(data, "UTF-8"));
+              sendEvent(data);
           }catch(UnsupportedEncodingException e){
               e.printStackTrace();
           }
@@ -210,7 +210,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
               offset = mSerialPort.write(data, 400);
-              sendEvent(String(offset, "UTF-8"));
+              sendEvent(offset);
               //sendEvent(REACTCONTEXT, "test", offset);
               p.resolve(offset);
             }else{
@@ -241,17 +241,17 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     private void readAsync(Promise promise) {
 
-        if (port != null) {
+        if (mSerialPort != null) {
             try {
                byte buffer[] = new byte[16];
                 int numBytesRead = mSerialPort.read(buffer, 1000);
                 Log.v("ReactNative", "blah");
-                promise.resolve(String(buffer, "UTF-8"));
+                promise.resolve(buffer);
             } catch (IOException e) {
                 promise.reject(e);
             }
         } else {
-            promise.resolve(getNoPortErrorMessage());
+            promise.resolve("no Port");
         }
     }
 
@@ -262,9 +262,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
     //             .emit(eventName, params);
     // }
-    private void sendEvent(String data) {
+    private void sendEvent(int data) {
       WritableMap params = Arguments.createMap();
-      params.putString("data", data);
+      params.putString("data", String.valueOf(data));
       Log.v("BATROBOT"," emit event");
       reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
   }
