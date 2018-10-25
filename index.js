@@ -27,6 +27,9 @@ export class UsbSerial {
 
     openDeviceAsync(deviceObject = {}) {
         return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
+          DeviceEventEmitter.addListener('test', function(e: Event) {
+              console.warn('BATROBOT test');
+          });
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
@@ -46,9 +49,7 @@ export class UsbSerial {
     }
     readOn(deviceId){
       UsbSerialModule.readDeviceAsync(deviceId);
-      DeviceEventEmitter.addListener('newData', function(e: Event) {
-          console.warn('BATROBOT DATATATATATA');
-      });
+
     }
 
 
