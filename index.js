@@ -16,6 +16,7 @@ export class UsbSerial {
     }
 
     getDeviceListAsync() {
+        console.log('BATroobot getDeviceListAsyn')
         return UsbSerialModule.getDeviceListAsync();
     }
 
@@ -41,4 +42,9 @@ export class UsbSerial {
           })
         });
     }
+    readOn(deviceId){
+      UsbSerialModule.readDeviceAsync(deviceId);
+    }
+
+    
 }
