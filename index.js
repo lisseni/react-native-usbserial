@@ -34,7 +34,7 @@ export class UsbSerial {
     write(cmd){
         return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
           return new Promise((resolve, reject)=>{
-            this.emit('newData');
+            //this.emit('newData');
             return resolve(res);
           })
         })
@@ -46,10 +46,10 @@ export class UsbSerial {
     }
     readOn(deviceId){
       UsbSerialModule.readDeviceAsync(deviceId);
-
+      DeviceEventEmitter.addListener('newData', function(e: Event) {
+          console.warn('BATROBOT DATATATATATA');
+      });
     }
 
-    // DeviceEventEmitter.addListener('newData', function(e: Event) {
-    // // handle event.
-    // });
+
 }
