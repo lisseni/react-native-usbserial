@@ -67,7 +67,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                 public void onNewData(final byte[] data) {
                   try{
               Log.v("BATROBOT", "Shazam");
-              sendEvent(data);
+              sendEvent(String.valueOf(data));
           }catch(UnsupportedEncodingException e){
               e.printStackTrace();
           }
@@ -210,7 +210,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
               offset = mSerialPort.write(data, 400);
-              sendEvent(offset);
+              sendEvent(String.valueOf(offset));
               //sendEvent(REACTCONTEXT, "test", offset);
               p.resolve(offset);
             }else{
@@ -262,9 +262,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
     //             .emit(eventName, params);
     // }
-    private void sendEvent(int data) {
+    private void sendEvent(String data) {
       WritableMap params = Arguments.createMap();
-      params.putString("data", String.valueOf(data));
+      params.putString("data", data);
       Log.v("BATROBOT"," emit event");
       reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
   }
