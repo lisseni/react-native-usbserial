@@ -5,6 +5,7 @@ import {
   NativeModules
 } from 'react-native';
 import UsbSerialDevice from './UsbSerialDevice';
+import { DeviceEventEmitter } from 'react-native';
 
 const UsbSerialModule = NativeModules.UsbSerial;
 
@@ -46,5 +47,7 @@ export class UsbSerial {
       UsbSerialModule.readDeviceAsync(deviceId);
     }
 
-    
+    DeviceEventEmitter.addListener('newData', function(e: Event) {
+    // handle event.
+    });
 }
