@@ -249,7 +249,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     private void sendEvent(String data) {
       WritableMap params = Arguments.createMap();
       params.putString("data", data);
-      Log.v('BATROBOT emit event');
+      Log.v("BATROBOT emit event");
       reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
   }
     // public void emitNewData(byte[] data) {
