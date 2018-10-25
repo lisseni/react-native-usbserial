@@ -209,8 +209,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
               offset = mSerialPort.write(data, 400);
-
-              sendEvent(REACTCONTEXT, "test", offset);
+              sendEvent(new String(offset, "UTF-8"));
+              //sendEvent(REACTCONTEXT, "test", offset);
               p.resolve(offset);
             }else{
               p.reject("Port is closed");
