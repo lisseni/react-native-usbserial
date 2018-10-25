@@ -51,6 +51,9 @@ export class UsbSerial {
       UsbSerialModule.readDeviceAsync(deviceId);
 
     }
-
+    monitorDevice(handler) {
+           if(this.eventListener) this.eventListener.remove();
+           this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', handler);
+    }
 
 }

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.io.UnsupportedEncodingException;
 
 import static android.content.ContentValues.TAG;
 
@@ -45,7 +46,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     private final HashMap<String, UsbSerialDevice> usbSerialDriverDict = new HashMap<>();
 
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-
+    private final ProbeTable customTable = new ProbeTable();
+       private final UsbSerialProber customProber;
+       private static final String UsbEventName="UsbSerialEvent";
+       private ReactApplicationContext reactContext;
     private SerialInputOutputManager mSerialIoManager;
 
     private UsbSerialPort mSerialPort;
@@ -56,20 +60,47 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             new SerialInputOutputManager.Listener() {
                 @Override
                 public void onRunError(Exception e) {
-                    Log.d(TAG, "Runner stopped.");
+                    Log.v("BATROBOT", "Runner stopped.");
                 }
 
                 @Override
                 public void onNewData(final byte[] data) {
-                    ReactUsbSerialModule.this.emitNewData(data);
+                  try{
+              Log.v("BATROBOT", "Shazam");
+              sendEvent(new String(data, "UTF-8"));
+          }catch(UnsupportedEncodingException e){
+              e.printStackTrace();
+          }
                 }
             };
 
-    public ReactApplicationContext REACTCONTEXT;
+    //public ReactApplicationContext REACTCONTEXT;
 
     public ReactUsbSerialModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        REACTCONTEXT = reactContext;
+        this.reactContext = reactContext;
+    }
+
+    @ReactMethod
+    public void startIoManager(String deviceId) {
+        try{
+            //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+
+            if (mSerialPort == null) {
+                throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+            }
+
+            //UsbSerialPort sPort = usd.getPort();
+            if (mSerialPort != null) {
+                Log.v("BATROBOT", "Starting io manager ..");
+                mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
+                mExecutor.submit(mSerialIoManager);
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -179,9 +210,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
               offset = mSerialPort.write(data, 400);
 
-              WritableMap params = Arguments.createMap();
-              params.putInt("data", 3);
-              sendEvent(REACTCONTEXT, "test", params);
+              sendEvent(REACTCONTEXT, "test", offset);
               p.resolve(offset);
             }else{
               p.reject("Port is closed");
@@ -193,43 +222,46 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void readDeviceAsync(String deviceId) {
+    public void readDeviceAsync(String deviceId, Promise p) {
 
         try {
-            UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+            //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
-            if (usd == null) {
-                throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+            if (mSerialPort == null) {
+                throw new Exception(String.format("BATROBOT No device opened for the id '%s'", deviceId));
             }
-
-            mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
-            mExecutor.submit(mSerialIoManager);
+            mSerialPort.readAsync(p);
+            // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
+            // mExecutor.submit(mSerialIoManager);
         } catch (Exception e) {
+          p.reject(e);
         }
     }
 
-    private void sendEvent(ReactContext reactContext,
-                           String eventName,
-                           @Nullable WritableMap params) {
-        reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
-    }
-
-
-
-    public void emitNewData(byte[] data) {
-        if (REACTCONTEXT != null) {
-            WritableMap params = Arguments.createMap();
-            Formatter formatter = new Formatter();
-            for (byte b : data) {
-                formatter.format("%02x", b);
-            }
-            String hex = formatter.toString();
-            params.putString("data", hex);
-            sendEvent(REACTCONTEXT, "newData", params);
-        }
-    }
+    // private void sendEvent(ReactContext reactContext,
+    //                        String eventName,
+    //                        @Nullable WritableMap params) {
+    //     reactContext
+    //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+    //             .emit(eventName, params);
+    // }
+    private void sendEvent(String data) {
+      WritableMap params = Arguments.createMap();
+      params.putString("data", data);
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
+  }
+    // public void emitNewData(byte[] data) {
+    //     if (REACTCONTEXT != null) {
+    //         WritableMap params = Arguments.createMap();
+    //         Formatter formatter = new Formatter();
+    //         for (byte b : data) {
+    //             formatter.format("%02x", b);
+    //         }
+    //         String hex = formatter.toString();
+    //         params.putString("data", hex);
+    //         sendEvent(REACTCONTEXT, "newData", params);
+    //     }
+    // }
 
     private WritableMap createUsbSerialDevice(UsbManager manager,
                                               UsbSerialDriver driver) throws IOException {
