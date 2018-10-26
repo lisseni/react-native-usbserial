@@ -66,9 +66,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onNewData(final byte[] data) {
-
-        Log.v("BATROBOT", "BATROBOT java data recieved %s", Arrays.toString(data));
-        sendEvent(Arrays.toString(data));
+        String str = new String(data, "UTF-8");
+        Log.v("BATROBOT", "BATROBOT java data recieved %s", str);
+        sendEvent(data);
 
 
   };
@@ -277,11 +277,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
   //             .emit(eventName, params);
   // }
-  private void sendEvent(String data) {
+  private void sendEvent(byte[] data) {
     WritableMap params = Arguments.createMap();
-    params.putString("data", data);
+    //params.putString("data", data);
     Log.v("BATROBOT","BATROBOT java emit event");
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, data);
   }
   // public void emitNewData(byte[] data) {
   //     if (REACTCONTEXT != null) {
