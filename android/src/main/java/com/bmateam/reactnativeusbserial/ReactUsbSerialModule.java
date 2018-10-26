@@ -94,12 +94,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
      }
 
   //@ReactMethod
-  private void startIoManager(String deviceId) {
+  private void startIoManager() {
     try{
       //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
       if (mSerialPort == null) {
-        throw new Exception(String.format("BATROBOT java No device opened for the id '%s'", deviceId));
+        throw new Exception(String.format("BATROBOT java No device opened for the id"));
       }
 
       //UsbSerialPort sPort = usd.getPort();

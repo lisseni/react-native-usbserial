@@ -56,8 +56,8 @@ export class UsbSerial {
         });
     }
     readOn(deviceId){
-      UsbSerialModule.startIoManager(deviceId);
-      UsbSerialModule.readDeviceAsync(deviceId);
+      UsbSerialModule.startIoManager();
+      //UsbSerialModule.readDeviceAsync(deviceId);
 
     }
     monitorDevice(handler) {
