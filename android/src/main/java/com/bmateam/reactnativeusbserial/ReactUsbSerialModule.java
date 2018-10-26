@@ -67,7 +67,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onNewData(final byte[] data) {
 
-        Log.v("BATROBOT", "BATROBOT java data recieved");
+        Log.v("BATROBOT", "BATROBOT java data recieved %s", String.valueOf(data));
         sendEvent(String.valueOf(data));
 
 
