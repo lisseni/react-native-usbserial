@@ -43,7 +43,6 @@ import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
-  //private final String TAG = ReactUsbSerialModule.class.getSimpleName();
   private final HashMap<String, UsbSerialDevice> usbSerialDriverDict = new HashMap<>();
 
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
@@ -61,13 +60,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   new SerialInputOutputManager.Listener() {
     @Override
     public void onRunError(Exception e) {
-      Log.v("BATROBOT", "BATROBOT java Runner stopped.");
+      Log.v("BATROBOT", "Runner stopped.");
     }
 
     @Override
     public void onNewData(final byte[] data) {
 
-        Log.v("BATROBOT", "BATROBOT java data recieved");
+        Log.v("BATROBOT", "Shazam");
         sendEvent(String.valueOf(data));
 
 
@@ -80,31 +79,18 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     this.reactContext = reactContext;
   }
 
-  private void stopIoManager() {
-     if (mSerialIoManager != null) {
-         Log.i(TAG, "BATROBOT java Stopping io manager ..");
-         mSerialIoManager.stop();
-         mSerialIoManager = null;
-     }
-  }
-
- private void onDeviceStateChange() {
-         stopIoManager();
-         startIoManager();
-     }
-
-  //@ReactMethod
-  private void startIoManager(String deviceId) {
+  @ReactMethod
+  public void startIoManager(String deviceId) {
     try{
       //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
       if (mSerialPort == null) {
-        throw new Exception(String.format("BATROBOT java No device opened for the id '%s'", deviceId));
+        throw new Exception(String.format("No device opened for the id '%s'", deviceId));
       }
 
       //UsbSerialPort sPort = usd.getPort();
       if (mSerialPort != null) {
-        Log.v("BATROBOT", " BATROBOT java Starting io manager ..");
+        Log.v("BATROBOT", "Starting io manager ..");
         mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
         mExecutor.submit(mSerialIoManager);
       }
@@ -140,7 +126,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
         deviceArray.pushMap(map);
       }
-      Log.v("BATROBOT", " BATROBOT java getDeviceListAsync");
+      Log.v("BATROBOT", "getDeviceListAsync");
       p.resolve(deviceArray);
     } catch (Exception e) {
       p.reject(e);
@@ -190,14 +176,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       if (manager.hasPermission(driver.getDevice())) {
         WritableMap usd = createUsbSerialDevice(manager, driver);
         ConnectionState = true;
-        Log.v("BATROBOT", "BATROBOT java opened");
-        onDeviceStateChange();
+        Log.v("BATROBOT", "opend");
         p.resolve(usd);
       } else {
-        Log.v("BATROBOT", "BATROBOT need Permission java opened");
         requestUsbPermission(manager, driver.getDevice(), p);
-
-        //p.reject("need Permission");
+        p.reject("need Permission");
       }
 
     } catch (Exception e) {
@@ -244,7 +227,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
       if (mSerialPort == null) {
-        throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+        throw new Exception(String.format("BATROBOT No device opened for the id '%s'", deviceId));
       }
       readAsync(p);
       // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
@@ -280,7 +263,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void sendEvent(String data) {
     WritableMap params = Arguments.createMap();
     params.putString("data", data);
-    Log.v("BATROBOT","BATROBOT java emit event");
+    Log.v("BATROBOT"," emit event");
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
   }
   // public void emitNewData(byte[] data) {
