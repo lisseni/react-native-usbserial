@@ -239,22 +239,22 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  @ReactMethod
-  public void readDeviceAsync(String deviceId, Promise p) {
-
-    try {
-      //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-
-      if (mSerialPort == null) {
-        throw new Exception(String.format("No device opened for the id '%s'", deviceId));
-      }
-      readAsync(p);
-      // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
-      // mExecutor.submit(mSerialIoManager);
-    } catch (Exception e) {
-      p.reject(e);
-    }
-  }
+  // @ReactMethod
+  // public void readDeviceAsync(String deviceId, Promise p) {
+  //
+  //   try {
+  //     //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+  //
+  //     if (mSerialPort == null) {
+  //       throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+  //     }
+  //     readAsync(p);
+  //     // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
+  //     // mExecutor.submit(mSerialIoManager);
+  //   } catch (Exception e) {
+  //     p.reject(e);
+  //   }
+  // }
 
   private void readAsync(Promise promise) {
 
