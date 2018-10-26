@@ -67,7 +67,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onNewData(final byte[] data) {
         String str = new String(data, "UTF-8");
-        Log.v("BATROBOT", "BATROBOT java data recieved %s", str);
+        Log.v("BATROBOT", "BATROBOT java data recieved '%s'", str);
         sendEvent(data);
 
 
@@ -392,7 +392,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
             } else {
-              p.resolve(new Exception(String.format("Permission denied by user for device %s", device
+              p.resolve(new Exception(String.format("Permission denied by user for device '%s'", device
               .getDeviceName())));
             }
           }
