@@ -72,7 +72,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
 
   };
-}
+};
   //public ReactApplicationContext REACTCONTEXT;
 
   public ReactUsbSerialModule(ReactApplicationContext reactContext) {
