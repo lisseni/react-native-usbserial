@@ -66,8 +66,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onNewData(final byte[] data) {
-        String str = new String(data, "UTF-8");
-        Log.v("BATROBOT", "BATROBOT java data recieved '%s'", str);
+        //String str = new String(data, "UTF-8");
+        final String message = "Read " + data.length + " bytes: \n"
+                + HexDump.dumpHexString(data) + "\n\n";
+        Log.v("BATROBOT", message);
         sendEvent(data);
 
 
