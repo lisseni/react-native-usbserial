@@ -37,11 +37,25 @@ export class UsbSerial {
         self.eventHandler(e);
       });
       return resolve(usd);
+    });
+
+  }
+
+  getUsbPermission(deviceObject = {}){
+    return UsbSerialModule.getUsbPermission(deviceObject).then((res)=>{
+      return new Promise((resolve, reject)=>{
+        //this.emit('newData');
+        return resolve(res);
+      })
     })
-    .catch((err)=>{
-      return reject(err);
+    .catch((res)=>{
+      return new Promise((resolve, reject)=>{
+        return reject(res);
+      })
     });
   }
+
+
 
   eventHandler(eventObject)
   {
@@ -52,7 +66,7 @@ export class UsbSerial {
   write(cmd){
     return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
       return new Promise((resolve, reject)=>{
-        this.emit('newData');
+        //this.emit('newData');
         return resolve(res);
       })
     })

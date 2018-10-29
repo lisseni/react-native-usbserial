@@ -150,33 +150,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void list(Promise p) {
-
-    try {
-      UsbManager usbManager = getUsbManager();
-
-      HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
-      WritableArray deviceArray = Arguments.createArray();
-
-      for (String key: usbDevices.keySet()) {
-        UsbDevice device = usbDevices.get(key);
-        WritableMap map = Arguments.createMap();
-
-        map.putString("comName", device.getDeviceName());
-        map.putInt("deviceId", device.getDeviceId());
-        map.putInt("productId", device.getProductId());
-        map.putInt("vendorId", device.getVendorId());
-
-        deviceArray.pushMap(map);
-      }
-
-      p.resolve(deviceArray);
-    } catch (Exception e) {
-      p.reject(e);
-    }
-  }
-
-  @ReactMethod
   public void test(Promise p){
     p.resolve("eeee");
   }
@@ -202,6 +175,42 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         //p.reject("need Permission");
       }
 
+    } catch (Exception e) {
+      p.reject(e);
+    }
+  }
+
+  @ReactMethod
+  public void getUsbPermission(ReadableMap deviceObject,
+  Promise p) {
+
+    try {
+      int prodId = deviceObject.getInt("productId");
+      UsbManager manager = getUsbManager();
+      UsbSerialDriver driver = getUsbSerialDriver(prodId, manager);
+      UsbDevice device = driver.getDevice();
+      ReactApplicationContext rAppContext = getReactApplicationContext();
+      PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+
+      registerBroadcastReceiver(p);
+
+      manager.requestPermission(device, permIntent);
+    } catch (Exception e) {
+      p.reject(e);
+    }
+  }
+
+  private void requestUsbPermission(UsbManager manager,
+  UsbDevice device,
+  Promise p) {
+
+    try {
+      ReactApplicationContext rAppContext = getReactApplicationContext();
+      PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+
+      registerBroadcastReceiver(p);
+
+      manager.requestPermission(device, permIntent);
     } catch (Exception e) {
       p.reject(e);
     }
@@ -239,22 +248,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  // @ReactMethod
-  // public void readDeviceAsync(String deviceId, Promise p) {
-  //
-  //   try {
-  //     //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-  //
-  //     if (mSerialPort == null) {
-  //       throw new Exception(String.format("No device opened for the id '%s'", deviceId));
-  //     }
-  //     readAsync(p);
-  //     // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
-  //     // mExecutor.submit(mSerialIoManager);
-  //   } catch (Exception e) {
-  //     p.reject(e);
-  //   }
-  // }
 
   private void readAsync(Promise promise) {
 
@@ -272,38 +265,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  // private void sendEvent(ReactContext reactContext,
-  //                        String eventName,
-  //                        @Nullable WritableMap params) {
-  //     reactContext
-  //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-  //             .emit(eventName, params);
-  // }
   private void sendEvent(byte[] data) {
-    //WritableMap eparams = Arguments.createMap();
-    //eparams.putString("data", data);
-
     WritableArray dataArray = Arguments.createArray();
     for (int i =0; i< data.length; i++) {
       dataArray.pushInt(data[i]);
     }
-    //final String message = "event data " + eparams;
-    //final String message = "event data ";
-    //Log.v("BATROBOT",message);
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
   }
-  // public void emitNewData(byte[] data) {
-  //     if (REACTCONTEXT != null) {
-  //         WritableMap params = Arguments.createMap();
-  //         Formatter formatter = new Formatter();
-  //         for (byte b : data) {
-  //             formatter.format("%02x", b);
-  //         }
-  //         String hex = formatter.toString();
-  //         params.putString("data", hex);
-  //         sendEvent(REACTCONTEXT, "newData", params);
-  //     }
-  // }
+
 
   private WritableMap createUsbSerialDevice(UsbManager manager,
   UsbSerialDriver driver) throws IOException {
@@ -330,21 +299,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     return map;
   }
 
-  private void requestUsbPermission(UsbManager manager,
-  UsbDevice device,
-  Promise p) {
 
-    try {
-      ReactApplicationContext rAppContext = getReactApplicationContext();
-      PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-
-      registerBroadcastReceiver(p);
-
-      manager.requestPermission(device, permIntent);
-    } catch (Exception e) {
-      p.reject(e);
-    }
-  }
 
   private static final String ACTION_USB_PERMISSION  = "com.bmateam.reactnativeusbserial.USB_PERMISSION";
 
