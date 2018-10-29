@@ -40,8 +40,9 @@ export class UsbSerial {
           //     console.warn('BATROBOT test');
           // });
           if(this.eventListener) this.eventListener.remove();
+          let temp = {rrrr:"dfsf"};
             this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-                console.warn('BATROBOT UsbSerialEvent test' + JSON.stringify(e));
+                console.warn('BATROBOT UsbSerialEvent test' + JSON.stringify(temp));
 
           });
           //this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', testhandler);
