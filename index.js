@@ -24,19 +24,22 @@ export class UsbSerial {
 
   openDeviceAsync(deviceObject = {}) {
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-      const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-      if(this.eventListener) {
-        this.eventListener.remove();
-      }
-      let temp = {rrrr:"dfsf"};
-      let self = this;
-      this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-        //this.emit('newData', e);
-        //self.emit('newData', temp);
-        //console.warn('SerialEvent test' + JSON.stringify(e));
-        self.eventHandler(e);
+      return new Promise((resolve, reject)=>{
+        const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
+        if(this.eventListener) {
+          this.eventListener.remove();
+        }
+        let temp = {rrrr:"dfsf"};
+        let self = this;
+        this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+          //this.emit('newData', e);
+          //self.emit('newData', temp);
+          //console.warn('SerialEvent test' + JSON.stringify(e));
+          self.eventHandler(e);
+        });
+        return resolve(usd);
       });
-      return resolve(usd);
+
     });
 
   }
