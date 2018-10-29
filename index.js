@@ -29,7 +29,8 @@ export class UsbSerial {
       }
       let temp = {rrrr:"dfsf"};
       this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-        this.emit('newData', e);
+        //this.emit('newData', e);
+        this.emit('newData', temp);
         //console.warn('SerialEvent test' + JSON.stringify(temp));
       });
       return resolve(usd);
