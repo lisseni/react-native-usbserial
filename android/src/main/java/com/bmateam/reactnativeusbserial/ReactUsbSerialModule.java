@@ -69,6 +69,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         Log.v("BATROBOT", "Shazam");
         sendEvent(String.valueOf(data));
 
+
 }
   };
 
