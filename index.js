@@ -26,7 +26,12 @@ export class UsbSerial {
     }
 
     testhandler(param){
-      console.log(`BATrobot UsbSerialEvent ${param}`);
+      if (param){
+                console.warn(`BATrobot UsbSerialEvent ${param}`);
+      }
+      else {
+                console.warn(`BATrobot UsbSerialEvent param = undefined`);
+      }
     }
 
     openDeviceAsync(deviceObject = {}) {
