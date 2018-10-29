@@ -11,6 +11,7 @@ const UsbSerialModule = NativeModules.UsbSerial;
 
 export class UsbSerial {
   constructor() {
+
     if (Platform.OS != 'android') {
       throw 'Unfortunately only android is supported';
     }
@@ -28,9 +29,10 @@ export class UsbSerial {
         this.eventListener.remove();
       }
       let temp = {rrrr:"dfsf"};
+      let self = this;
       this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
         //this.emit('newData', e);
-        this.emit('newData', temp);
+        self.emit('newData', temp);
         //console.warn('SerialEvent test' + JSON.stringify(temp));
       });
       return resolve(usd);
