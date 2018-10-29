@@ -65,12 +65,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     @Override
     public void onNewData(final byte[] data) {
+      
+      Log.v("BATROBOT", "Shazam");
+      final String message = "Read " + data.length + " bytes: \n"
+      + HexDump.dumpHexString(data) + "\n\n";
+      sendEvent(message);
 
-        Log.v("BATROBOT", "Shazam");
-        sendEvent(String.valueOf(data));
 
-
-}
+    }
   };
 
   //public ReactApplicationContext REACTCONTEXT;
