@@ -45,7 +45,7 @@ export class UsbSerial {
 
   eventHandler(eventObject)
   {
-    console.warn('SerialEvent test' + JSON.stringify(eventObject));
+    console.warn('SerialEvent data' + JSON.stringify(eventObject));
   }
 
   write(cmd){
