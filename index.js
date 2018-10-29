@@ -28,17 +28,16 @@ export class UsbSerial {
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
       return new Promise((resolve, reject)=>{
         const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        if(this.eventListener) {
-          this.eventListener.remove();
-        }
-        let temp = {rrrr:"dfsf"};
-        let self = this;
-        this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-          //this.emit('newData', e);
-          //self.emit('newData', temp);
-          //console.warn('SerialEvent test' + JSON.stringify(e));
-          self.eventHandler(e);
-        });
+        // if(this.eventListener) {
+        //   this.eventListener.remove();
+        // }
+        //     let self = this;
+        // this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+        //   //this.emit('newData', e);
+        //   //self.emit('newData', temp);
+        //   //console.warn('SerialEvent test' + JSON.stringify(e));
+        //   self.eventHandler(e);
+        // });
         return resolve(usd);
       });
 
@@ -60,6 +59,19 @@ export class UsbSerial {
     });
   }
 
+
+  monitor(handler){
+    if(this.eventListener) {
+      this.eventListener.remove();
+    }
+        let self = this;
+    this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+      //this.emit('newData', e);
+      //self.emit('newData', temp);
+      //console.warn('SerialEvent test' + JSON.stringify(e));
+      handler(e);
+    });
+  }
 
 
   eventHandler(eventObject)
@@ -85,4 +97,3 @@ export class UsbSerial {
 
   }
 }
-inherits(UsbSerial, EventEmitter);
