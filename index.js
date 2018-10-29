@@ -34,7 +34,7 @@ export class UsbSerial {
         //this.emit('newData', e);
         //self.emit('newData', temp);
         //console.warn('SerialEvent test' + JSON.stringify(e));
-        eventHandler(e);
+        self.eventHandler(e);
       });
       return resolve(usd);
     })
