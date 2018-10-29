@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 import UsbSerialDevice from './UsbSerialDevice';
 import { DeviceEventEmitter } from 'react-native';
+const EventEmitter = require('events')
+const inherits = require('inherits');
 
 const UsbSerialModule = NativeModules.UsbSerial;
 
@@ -63,7 +65,7 @@ export class UsbSerial {
   eventHandler(eventObject)
   {
     console.warn('SerialEvent data' + JSON.stringify(eventObject));
-    //this.emit('newData');
+    this.emit('newData');
   }
 
   write(cmd){
@@ -83,3 +85,4 @@ export class UsbSerial {
 
   }
 }
+inherits(UsbSerial, EventEmitter);
