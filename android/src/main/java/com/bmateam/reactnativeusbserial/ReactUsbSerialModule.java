@@ -70,7 +70,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         final String message = "Read " + data.length + " bytes: \n"
                 + HexDump.dumpHexString(data) + "\n\n";
         Log.v("BATROBOT", message);
-        sendEvent("ee");
+        sendEvent(data);
 
 
   };
@@ -279,13 +279,18 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
   //             .emit(eventName, params);
   // }
-  private void sendEvent(String data) {
+  private void sendEvent(byte[] data) {
     WritableMap eparams = Arguments.createMap();
     eparams.putString("data", data);
+
+    WritableArray dataArray = Arguments.createArray();
+    for (int i =0; i< data.length; i++) {
+      dataArray.pushInt(data[i]);
+    }
     //final String message = "event data " + eparams;
     //final String message = "event data ";
     //Log.v("BATROBOT",message);
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, eparams);
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
   }
   // public void emitNewData(byte[] data) {
   //     if (REACTCONTEXT != null) {
