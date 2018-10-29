@@ -36,7 +36,8 @@ export class UsbSerial {
           // });
           if(this.eventListener) this.eventListener.remove();
             this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-                console.warn('BATROBOT UsbSerialEvent');
+                console.warn('BATROBOT UsbSerialEvent' + e);
+
           });
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
