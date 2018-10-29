@@ -46,13 +46,13 @@ export class UsbSerial {
   eventHandler(eventObject)
   {
     console.warn('SerialEvent data' + JSON.stringify(eventObject));
-    this.emit('newData');
+    //this.emit('newData');
   }
 
   write(cmd){
     return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
       return new Promise((resolve, reject)=>{
-        //this.emit('newData');
+        this.emit('newData');
         return resolve(res);
       })
     })
