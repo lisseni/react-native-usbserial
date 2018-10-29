@@ -280,8 +280,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   //             .emit(eventName, params);
   // }
   private void sendEvent(byte[] data) {
-    WritableMap eparams = Arguments.createMap();
-    eparams.putString("data", data);
+    //WritableMap eparams = Arguments.createMap();
+    //eparams.putString("data", data);
 
     WritableArray dataArray = Arguments.createArray();
     for (int i =0; i< data.length; i++) {
