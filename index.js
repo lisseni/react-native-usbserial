@@ -25,9 +25,9 @@ export class UsbSerial {
         return UsbSerialModule.list();
     }
 
-    // handler(){
-    //   console.log('BATrobot UsbSerialEvent')
-    // }
+    testhandler(param){
+      console.log(`BATrobot UsbSerialEvent ${param}`);
+    }
 
     openDeviceAsync(deviceObject = {}) {
         return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
@@ -35,10 +35,11 @@ export class UsbSerial {
           //     console.warn('BATROBOT test');
           // });
           if(this.eventListener) this.eventListener.remove();
-            this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-                console.warn('BATROBOT UsbSerialEvent' + e + ' ee');
-
-          });
+          //   this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+          //       console.warn('BATROBOT UsbSerialEvent' + e + ' ee');
+          //
+          // });
+          this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', testhandler);
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
