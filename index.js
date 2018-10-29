@@ -27,7 +27,7 @@ export class UsbSerial {
 
     testhandler(param){
       if (param){
-                console.warn(`BATrobot UsbSerialEvent ${param}`);
+                console.warn(`BATrobot UsbSerialEvent param != undefined`);
       }
       else {
                 console.warn(`BATrobot UsbSerialEvent param = undefined`);
