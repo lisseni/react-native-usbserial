@@ -10,67 +10,49 @@ import { DeviceEventEmitter } from 'react-native';
 const UsbSerialModule = NativeModules.UsbSerial;
 
 export class UsbSerial {
-    constructor() {
-        if (Platform.OS != 'android') {
-            throw 'Unfortunately only android is supported';
-        }
+  constructor() {
+    if (Platform.OS != 'android') {
+      throw 'Unfortunately only android is supported';
     }
+  }
 
-    getDeviceListAsync() {
-        console.log('BATrobot getDeviceListAsyn')
-        return UsbSerialModule.getDeviceListAsync();
-    }
+  getDeviceListAsync() {
+    console.log('BATrobot getDeviceListAsyn')
+    return UsbSerialModule.getDeviceListAsync();
+  }
 
-    list() {
-        return UsbSerialModule.list();
-    }
+  openDeviceAsync(deviceObject = {}) {
+    return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
+      const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
+      if(this.eventListener) {
+        this.eventListener.remove();
+      }
+      let temp = {rrrr:"dfsf};
+      this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+        this.emit('newData', e);
+        //console.warn('SerialEvent test' + JSON.stringify(temp));
+      });
+      return resolve(usd);
+    })
+    .catch((err)=>{
+      return reject(err);
+    });
+  }
 
-    // testhandler(param){
-    //   if (param){
-    //             console.warn(`BATrobot UsbSerialEvent param != undefined`);
-    //   }
-    //   else {
-    //             console.warn(`BATrobot UsbSerialEvent param = undefined`);
-    //   }
-    // }
+  write(cmd){
+    return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
+      return new Promise((resolve, reject)=>{
+        //this.emit('newData');
+        return resolve(res);
+      })
+    })
+    .catch((res)=>{
+      return new Promise((resolve, reject)=>{
+        return reject(res);
+      })
+    });
+  }
+  readOn(deviceId){
 
-    openDeviceAsync(deviceObject = {}) {
-        return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-          // DeviceEventEmitter.addListener('test', function(e: Event) {
-          //     console.warn('BATROBOT test');
-          // });
-          if(this.eventListener) this.eventListener.remove();
-          let temp = {rrrr:"dfsf"};
-            this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-                console.warn('BATROBOT UsbSerialEvent test' + JSON.stringify(e));
-
-          });
-          //this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', testhandler);
-            return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        });
-    }
-
-    write(cmd){
-        return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
-          return new Promise((resolve, reject)=>{
-            //this.emit('newData');
-            return resolve(res);
-          })
-        })
-        .catch((res)=>{
-          return new Promise((resolve, reject)=>{
-            return reject(res);
-          })
-        });
-    }
-    readOn(deviceId){
-      //UsbSerialModule.startIoManager();
-      //UsbSerialModule.readDeviceAsync(deviceId);
-
-    }
-    // monitorDevice(handler) {
-    //        if(this.eventListener) this.eventListener.remove();
-    //        this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', handler);
-    // }
-
+  }
 }
