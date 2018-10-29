@@ -40,11 +40,11 @@ export class UsbSerial {
           //     console.warn('BATROBOT test');
           // });
           if(this.eventListener) this.eventListener.remove();
-          //   this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-          //       console.warn('BATROBOT UsbSerialEvent' + e + ' ee');
-          //
-          // });
-          this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', testhandler);
+            this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
+                console.warn('BATROBOT UsbSerialEvent test');
+
+          });
+          //this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent', testhandler);
             return new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
         });
     }
