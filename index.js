@@ -25,14 +25,14 @@ export class UsbSerial {
         return UsbSerialModule.list();
     }
 
-    testhandler(param){
-      if (param){
-                console.warn(`BATrobot UsbSerialEvent param != undefined`);
-      }
-      else {
-                console.warn(`BATrobot UsbSerialEvent param = undefined`);
-      }
-    }
+    // testhandler(param){
+    //   if (param){
+    //             console.warn(`BATrobot UsbSerialEvent param != undefined`);
+    //   }
+    //   else {
+    //             console.warn(`BATrobot UsbSerialEvent param = undefined`);
+    //   }
+    // }
 
     openDeviceAsync(deviceObject = {}) {
         return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
