@@ -33,13 +33,19 @@ export class UsbSerial {
       this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
         //this.emit('newData', e);
         //self.emit('newData', temp);
-        console.warn('SerialEvent test' + JSON.stringify(e));
+        //console.warn('SerialEvent test' + JSON.stringify(e));
+        eventHandler(e);
       });
       return resolve(usd);
     })
     .catch((err)=>{
       return reject(err);
     });
+  }
+
+  eventHandler(eventObject)
+  {
+    console.warn('SerialEvent test' + JSON.stringify(eventObject));
   }
 
   write(cmd){
