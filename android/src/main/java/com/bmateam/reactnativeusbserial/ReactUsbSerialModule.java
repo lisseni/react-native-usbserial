@@ -43,6 +43,7 @@ import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
+  //private final String TAG = ReactUsbSerialModule.class.getSimpleName();
   private final HashMap<String, UsbSerialDevice> usbSerialDriverDict = new HashMap<>();
 
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
@@ -60,21 +61,20 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   new SerialInputOutputManager.Listener() {
     @Override
     public void onRunError(Exception e) {
-      Log.v("BATROBOT", "Runner stopped.");
+      Log.v("BATROBOT", "BATROBOT java Runner stopped.");
     }
 
     @Override
     public void onNewData(final byte[] data) {
-      
-      Log.v("BATROBOT", "Shazam");
-      final String message = "Read " + data.length + " bytes: \n"
-      + HexDump.dumpHexString(data) + "\n\n";
-      sendEvent(message);
+        //String str = new String(data, "UTF-8");
+        final String message = "Read " + data.length + " bytes: \n"
+                + HexDump.dumpHexString(data) + "\n\n";
+        Log.v("BATROBOT", message);
+        sendEvent(data);
 
 
-    }
   };
-
+};
   //public ReactApplicationContext REACTCONTEXT;
 
   public ReactUsbSerialModule(ReactApplicationContext reactContext) {
@@ -82,18 +82,31 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     this.reactContext = reactContext;
   }
 
-  @ReactMethod
-  public void startIoManager(String deviceId) {
+  private void stopIoManager() {
+     if (mSerialIoManager != null) {
+         Log.i(TAG, "BATROBOT java Stopping io manager ..");
+         mSerialIoManager.stop();
+         mSerialIoManager = null;
+     }
+  }
+
+ private void onDeviceStateChange() {
+         stopIoManager();
+         startIoManager();
+     }
+
+  //@ReactMethod
+  private void startIoManager() {
     try{
       //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
 
       if (mSerialPort == null) {
-        throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+        throw new Exception(String.format("BATROBOT java No device opened for the id"));
       }
 
       //UsbSerialPort sPort = usd.getPort();
       if (mSerialPort != null) {
-        Log.v("BATROBOT", "Starting io manager ..");
+        Log.v("BATROBOT", " BATROBOT java Starting io manager ..");
         mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
         mExecutor.submit(mSerialIoManager);
       }
@@ -129,7 +142,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
         deviceArray.pushMap(map);
       }
-      Log.v("BATROBOT", "getDeviceListAsync");
+      Log.v("BATROBOT", " BATROBOT java getDeviceListAsync");
       p.resolve(deviceArray);
     } catch (Exception e) {
       p.reject(e);
@@ -179,10 +192,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       if (manager.hasPermission(driver.getDevice())) {
         WritableMap usd = createUsbSerialDevice(manager, driver);
         ConnectionState = true;
-        Log.v("BATROBOT", "opend");
+        Log.v("BATROBOT", "BATROBOT java opened");
+        onDeviceStateChange();
         p.resolve(usd);
       } else {
+        Log.v("BATROBOT", "BATROBOT need Permission java opened");
         requestUsbPermission(manager, driver.getDevice(), p);
+
         //p.reject("need Permission");
       }
 
@@ -211,7 +227,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         }
 
         offset = mSerialPort.write(data, 400);
-        sendEvent(String.valueOf(offset));
+        //sendEvent(String.valueOf(offset));
         //sendEvent(REACTCONTEXT, "test", offset);
         p.resolve(offset);
       }else{
@@ -223,22 +239,22 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  @ReactMethod
-  public void readDeviceAsync(String deviceId, Promise p) {
-
-    try {
-      //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-
-      if (mSerialPort == null) {
-        throw new Exception(String.format("BATROBOT No device opened for the id '%s'", deviceId));
-      }
-      readAsync(p);
-      // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
-      // mExecutor.submit(mSerialIoManager);
-    } catch (Exception e) {
-      p.reject(e);
-    }
-  }
+  // @ReactMethod
+  // public void readDeviceAsync(String deviceId, Promise p) {
+  //
+  //   try {
+  //     //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
+  //
+  //     if (mSerialPort == null) {
+  //       throw new Exception(String.format("No device opened for the id '%s'", deviceId));
+  //     }
+  //     readAsync(p);
+  //     // mSerialIoManager = new SerialInputOutputManager(usd.port, mListener);
+  //     // mExecutor.submit(mSerialIoManager);
+  //   } catch (Exception e) {
+  //     p.reject(e);
+  //   }
+  // }
 
   private void readAsync(Promise promise) {
 
@@ -263,11 +279,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   //             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
   //             .emit(eventName, params);
   // }
-  private void sendEvent(String data) {
+  private void sendEvent(byte[] data) {
     WritableMap params = Arguments.createMap();
-    params.putString("data", data);
-    Log.v("BATROBOT"," emit event");
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, params);
+    //params.putString("data", data);
+    Log.v("BATROBOT","BATROBOT java emit event");
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, data);
   }
   // public void emitNewData(byte[] data) {
   //     if (REACTCONTEXT != null) {
@@ -378,7 +394,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               }
 
             } else {
-              p.resolve(new Exception(String.format("Permission denied by user for device %s", device
+              p.resolve(new Exception(String.format("Permission denied by user for device '%s'", device
               .getDeviceName())));
             }
           }
