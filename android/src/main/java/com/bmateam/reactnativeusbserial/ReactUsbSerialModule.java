@@ -160,7 +160,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         mSerialPort = null;
         ConnectionState = false;
         //usbSerialDriverDict
-        p.resolve();
+        p.resolve("Port closed");
       }else{
         p.reject("Port wasn't opened");
       }
@@ -179,7 +179,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
       UsbDevice device = driver.getDevice();
       if (manager.hasPermission(device)){
-        p.resolve();
+        p.resolve("hasPermission");
       }
       else{
         ReactApplicationContext rAppContext = getReactApplicationContext();
