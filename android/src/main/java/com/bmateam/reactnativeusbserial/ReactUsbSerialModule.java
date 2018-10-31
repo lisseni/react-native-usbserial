@@ -247,7 +247,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void sendEvent(byte[] data) {
     WritableArray dataArray = Arguments.createArray();
     for (int i =0; i< data.length; i++) {
-      dataArray.pushInt(data[i]);
+      dataArray.pushString(data[i]);
     }
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
   }
