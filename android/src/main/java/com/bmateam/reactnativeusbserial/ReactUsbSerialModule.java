@@ -182,10 +182,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         p.resolve("hasPermission");
       }
       else{
-        ReactApplicationContext rAppContext = getReactApplicationContext();
-        PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-        registerBroadcastReceiver(p);
-        manager.requestPermission(device, permIntent);
+        Log.w("USBSerialModule","device has no permission");
+        requestUsbPermission(manager, device, p);
       }
     } catch (Exception e) {
       p.reject(e);
