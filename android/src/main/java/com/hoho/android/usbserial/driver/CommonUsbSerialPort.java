@@ -160,7 +160,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
     public abstract void setRTS(boolean value) throws IOException;
 
     @Override
-    public abstract boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
+    public boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
         return !flushReadBuffers && !flushWriteBuffers;
     }
 
