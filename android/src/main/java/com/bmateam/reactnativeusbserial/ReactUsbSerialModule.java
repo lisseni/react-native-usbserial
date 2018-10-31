@@ -60,7 +60,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onNewData(final byte[] data) {
       sendEvent(data);
-      mSerialPort.purgeHwBuffers(true, false);
     }
   };
 
@@ -103,24 +102,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @Override
   public String getName() {
     return "UsbSerial";
-  }
-
-  @ReactMethod
-  public void flushBuffers(boolean flushReadBuffers, boolean flushWriteBuffers, Promise p) {
-    try{
-      if (ConnectionState)
-      {
-        boolean res = mSerialPort.purgeHwBuffers(flushReadBuffers, flushWriteBuffers);
-        p.resolve(res);
-      }
-      else{
-        p.reject("port is closed");
-      }
-    }
-    catch (Exception e) {
-      p.reject(e);
-    }
-
   }
 
   @ReactMethod
@@ -234,7 +215,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         for (int i =0; i< cmd.size(); i++) {
           data[i] = (byte)cmd.getInt(i);
         }
-        mSerialPort.purgeHwBuffers(false, true);
         offset = mSerialPort.write(data, 400);
 
         p.resolve(offset);
