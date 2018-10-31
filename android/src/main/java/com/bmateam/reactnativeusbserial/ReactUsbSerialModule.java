@@ -251,7 +251,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
        //String b = HexDump.dumpHexString(data[i])
        dataArray.pushString(HexDump.dumpHexString(data[i]));
      }
-    dataArray.pushString(b);
+    //dataArray.pushString(b);
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
   }
 
