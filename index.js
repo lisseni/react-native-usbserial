@@ -2,12 +2,10 @@
 
 import {
   Platform,
-  NativeModules
+  NativeModules,
+  DeviceEventEmitter
 } from 'react-native';
 import UsbSerialDevice from './UsbSerialDevice';
-import { DeviceEventEmitter } from 'react-native';
-const EventEmitter = require('events')
-const inherits = require('inherits');
 
 const UsbSerialModule = NativeModules.UsbSerial;
 
@@ -20,36 +18,28 @@ export class UsbSerial {
   }
 
   getDeviceListAsync() {
-    console.log('BATrobot getDeviceListAsyn')
     return UsbSerialModule.getDeviceListAsync();
   }
 
   openDeviceAsync(deviceObject = {}) {
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-      return new Promise((resolve, reject)=>{
+      return new Promise((resolve)=>{
         const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        // if(this.eventListener) {
-        //   this.eventListener.remove();
-        // }
-        //     let self = this;
-        // this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-        //   //this.emit('newData', e);
-        //   //self.emit('newData', temp);
-        //   //console.warn('SerialEvent test' + JSON.stringify(e));
-        //   self.eventHandler(e);
-        // });
         return resolve(usd);
-      });
-
+      })
+      .catch((err)=>{
+        return new Promise((reject)=>{
+          return reject(err);
+        })
+      })
     });
-
   }
 
   getUsbPermission(deviceObject = {}){
     return UsbSerialModule.getUsbPermission(deviceObject).then((res)=>{
       return new Promise((resolve, reject)=>{
-        //this.emit('newData');
         return resolve(res);
+
       })
     })
     .catch((res)=>{
@@ -58,42 +48,40 @@ export class UsbSerial {
       })
     });
   }
-
 
   monitor(handler){
     if(this.eventListener) {
       this.eventListener.remove();
     }
-        let self = this;
-    this.eventListener = DeviceEventEmitter.addListener('UsbSerialEvent',function(e: Event) {
-      //this.emit('newData', e);
-      //self.emit('newData', temp);
-      //console.warn('SerialEvent test' + JSON.stringify(e));
+    this.eventListener = DeviceEventEmitter.addListener('Data',function(e: Event) {
       handler(e);
     });
   }
 
-
-  eventHandler(eventObject)
-  {
-    console.warn('SerialEvent data' + JSON.stringify(eventObject));
-    this.emit('newData');
-  }
-
   write(cmd){
     return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
-      return new Promise((resolve, reject)=>{
-        //this.emit('newData');
+      return new Promise((resolve)=>{
         return resolve(res);
       })
     })
-    .catch((res)=>{
-      return new Promise((resolve, reject)=>{
-        return reject(res);
+    .catch((err)=>{
+      return new Promise((reject)=>{
+        return reject(err);
       })
     });
   }
-  readOn(deviceId){
 
+  close(deviceObject = {}){
+    return UsbSerialModule.closeDevice(deviceObject).then(()=>{
+      return new Promise((resolve, reject)=>{
+        return resolve();
+
+      })
+    })
+    .catch((err)=>{
+      return new Promise((resolve, reject)=>{
+        return reject(err);
+      })
+    });
   }
 }

@@ -43,39 +43,25 @@ import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
-  //private final String TAG = ReactUsbSerialModule.class.getSimpleName();
   private final HashMap<String, UsbSerialDevice> usbSerialDriverDict = new HashMap<>();
-
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-  //private final ProbeTable customTable = new ProbeTable();
-  //private final UsbSerialProber customProber;
-  private static final String UsbEventName="UsbSerialEvent";
+  private static final String UsbEventName="Data";
   private ReactApplicationContext reactContext;
   private SerialInputOutputManager mSerialIoManager;
-
   private UsbSerialPort mSerialPort = null;
-
   private boolean ConnectionState = false;
 
   private final SerialInputOutputManager.Listener mListener =
   new SerialInputOutputManager.Listener() {
     @Override
     public void onRunError(Exception e) {
-      Log.v("BATROBOT", "BATROBOT java Runner stopped.");
+      Log.v("USBSerialModule", "Runner stopped.");
     }
-
     @Override
     public void onNewData(final byte[] data) {
-        //String str = new String(data, "UTF-8");
-        final String message = "Read " + data.length + " bytes: \n"
-                + HexDump.dumpHexString(data) + "\n\n";
-        Log.v("BATROBOT", message);
-        sendEvent(data);
-
-
+      sendEvent(data);
+    }
   };
-};
-  //public ReactApplicationContext REACTCONTEXT;
 
   public ReactUsbSerialModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -83,30 +69,26 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   private void stopIoManager() {
-     if (mSerialIoManager != null) {
-         Log.i(TAG, "BATROBOT java Stopping io manager ..");
-         mSerialIoManager.stop();
-         mSerialIoManager = null;
-     }
+    if (mSerialIoManager != null) {
+      Log.i("USBSerialModule", "Stopping io manager ..");
+      mSerialIoManager.stop();
+      mSerialIoManager = null;
+    }
   }
 
- private void onDeviceStateChange() {
-         stopIoManager();
-         startIoManager();
-     }
+  private void onDeviceStateChange() {
+    stopIoManager();
+    startIoManager();
+  }
 
-  //@ReactMethod
   private void startIoManager() {
     try{
-      //UsbSerialDevice usd = usbSerialDriverDict.get(deviceId);
-
       if (mSerialPort == null) {
-        throw new Exception(String.format("BATROBOT java No device opened for the id"));
+        throw new Exception(String.format("No device opened"));
       }
 
-      //UsbSerialPort sPort = usd.getPort();
       if (mSerialPort != null) {
-        Log.v("BATROBOT", " BATROBOT java Starting io manager ..");
+        Log.v("USBSerialModule", "Starting io manager ..");
         mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
         mExecutor.submit(mSerialIoManager);
       }
@@ -124,7 +106,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getDeviceListAsync(Promise p) {
-
     try {
       UsbManager usbManager = getUsbManager();
 
@@ -142,16 +123,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
         deviceArray.pushMap(map);
       }
-      Log.v("BATROBOT", " BATROBOT java getDeviceListAsync");
       p.resolve(deviceArray);
     } catch (Exception e) {
       p.reject(e);
     }
-  }
-
-  @ReactMethod
-  public void test(Promise p){
-    p.resolve("eeee");
   }
 
   @ReactMethod
@@ -165,36 +140,53 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       if (manager.hasPermission(driver.getDevice())) {
         WritableMap usd = createUsbSerialDevice(manager, driver);
         ConnectionState = true;
-        Log.v("BATROBOT", "BATROBOT java opened");
         onDeviceStateChange();
         p.resolve(usd);
       } else {
-        Log.v("BATROBOT", "BATROBOT need Permission java opened");
         requestUsbPermission(manager, driver.getDevice(), p);
-
-        //p.reject("need Permission");
       }
-
     } catch (Exception e) {
       p.reject(e);
     }
   }
 
   @ReactMethod
-  public void getUsbPermission(ReadableMap deviceObject,
-  Promise p) {
+  public void closeDevice(ReadableMap deviceObject, Promise p) {
+
+    try {
+      if (ConnectionState){
+        stopIoManager();
+        mSerialPort.close();
+        mSerialPort = null;
+        ConnectionState = false;
+        //usbSerialDriverDict
+        p.resolve();
+      }else{
+        p.reject("Port wasn't opened");
+      }
+    } catch (Exception e) {
+      p.reject(e);
+    }
+  }
+
+  @ReactMethod
+  public void getUsbPermission(ReadableMap deviceObject, Promise p) {
 
     try {
       int prodId = deviceObject.getInt("productId");
       UsbManager manager = getUsbManager();
       UsbSerialDriver driver = getUsbSerialDriver(prodId, manager);
+
       UsbDevice device = driver.getDevice();
-      ReactApplicationContext rAppContext = getReactApplicationContext();
-      PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
-
-      registerBroadcastReceiver(p);
-
-      manager.requestPermission(device, permIntent);
+      if (manager.hasPermission(device)){
+        p.resolve();
+      }
+      else{
+        ReactApplicationContext rAppContext = getReactApplicationContext();
+        PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        registerBroadcastReceiver(p);
+        manager.requestPermission(device, permIntent);
+      }
     } catch (Exception e) {
       p.reject(e);
     }
@@ -221,23 +213,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     int offset = 0;
     try {
       if (ConnectionState){
-        // WritableArray cmd = Arguments.createArray();
-        // cmd.pushInt(0xC0);
-        // cmd.pushInt(0x46);
-        // cmd.pushInt(0x0C);
-        // cmd.pushInt(0x02);
-        // cmd.pushInt(0x18);
-        // cmd.pushInt(0x00);
-        // cmd.pushInt(0xd2);
-        //byte[] data = {(byte)0x80, (byte)0x27,(byte)0x05,(byte)0x52};
         byte[] data = new byte[cmd.size()];
         for (int i =0; i< cmd.size(); i++) {
           data[i] = (byte)cmd.getInt(i);
         }
-
         offset = mSerialPort.write(data, 400);
-        //sendEvent(String.valueOf(offset));
-        //sendEvent(REACTCONTEXT, "test", offset);
         p.resolve(offset);
       }else{
         p.reject("Port is closed");
