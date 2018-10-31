@@ -105,7 +105,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     return "UsbSerial";
   }
 
-  @Override
+  @ReactMethod
   public void flushBuffers(boolean flushReadBuffers, boolean flushWriteBuffers, Promise p) {
     try{
       if (ConnectionState)
