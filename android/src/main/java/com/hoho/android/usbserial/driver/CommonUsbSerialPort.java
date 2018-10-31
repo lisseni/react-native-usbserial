@@ -58,7 +58,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
         mReadBuffer = new byte[DEFAULT_READ_BUFFER_SIZE];
         mWriteBuffer = new byte[DEFAULT_WRITE_BUFFER_SIZE];
     }
-    
+
     @Override
     public String toString() {
         return String.format("<%s device_name=%s device_id=%s port_number=%s>",
@@ -79,7 +79,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
     public int getPortNumber() {
         return mPortNumber;
     }
-    
+
     /**
      * Returns the device serial number
      *  @return serial number
@@ -160,7 +160,7 @@ abstract class CommonUsbSerialPort implements UsbSerialPort {
     public abstract void setRTS(boolean value) throws IOException;
 
     @Override
-    public boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
+    public abstract boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
         return !flushReadBuffers && !flushWriteBuffers;
     }
 

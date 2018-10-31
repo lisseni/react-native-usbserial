@@ -424,6 +424,22 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             setDtrRts();
         }
 
+        @Override
+        public boolean purgeHwBuffers(boolean flushReadBuffers, boolean flushWriteBuffers) throws IOException {
+            if (flushWriteBuffers)
+            {
+              synchronized (mWriteBufferLock) {
+                mWriteBuffer.clear();
+            }
+
+           if (flushReadBuffers)
+           {
+             synchronized (mReadBufferLock) {
+               mReadBuffer.clear();
+              }
+           }
+        }
+
         private void setDtrRts() throws IOException {
             int value = (mRts ? 0x2 : 0) | (mDtr ? 0x1 : 0);
             sendAcmControlMessage(SET_CONTROL_LINE_STATE, value, null);
