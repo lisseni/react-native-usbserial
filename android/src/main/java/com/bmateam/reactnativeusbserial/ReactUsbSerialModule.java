@@ -199,8 +199,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
 
       registerBroadcastReceiver(p);
+      if (manager.hasPermission(device)){
+        p.resolve("hasPermission");
+      }else{
+        manager.requestPermission(device, permIntent);
+      }
 
-      manager.requestPermission(device, permIntent);
     } catch (Exception e) {
       p.reject(e);
     }
@@ -264,7 +268,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
 
     mSerialPort.open(connection);
-    mSerialPort.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+    mSerialPort.setParameters(96, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
     String id = generateId();
     UsbSerialDevice usd = new UsbSerialDevice(mSerialPort);
