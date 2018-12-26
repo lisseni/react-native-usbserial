@@ -53,8 +53,8 @@ public final class UsbId {
     public static final int ARDUINO_LEONARDO = 0x8036;
     public static final int ARDUINO_MICRO = 0x8037;
 
-    public static final int VENDOR_VAN_OOIJEN_TECH = 0x0483;
-    public static final int VAN_OOIJEN_TECH_TEENSYDUINO_SERIAL = 0x5740;
+    public static final int VENDOR_VAN_OOIJEN_TECH = 0x16c0;
+    public static final int VAN_OOIJEN_TECH_TEENSYDUINO_SERIAL = 0x0483;
 
     public static final int VENDOR_LEAFLABS = 0x1eaf;
     public static final int LEAFLABS_MAPLE = 0x0004;
@@ -71,12 +71,11 @@ public final class UsbId {
     public static final int VENDOR_QINHENG = 0x1a86;
     public static final int QINHENG_HL340 = 0x7523;
 
+    public static final int VENDOR_STM = 0x0483;
+    public static final int STM_COM = 0x5740;
     // at www.linux-usb.org/usb.ids listed for NXP/LPC1768, but all processors supported by ARM mbed DAPLink firmware report these ids
     public static final int VENDOR_ARM = 0x0d28;
     public static final int ARM_MBED = 0x0204;
-
-//    public static final int VENDOR_STM = 0x0483;
-//    public static final int STM_COM = 0x5740;
 
     private UsbId() {
         throw new IllegalAccessError("Non-instantiable class.");

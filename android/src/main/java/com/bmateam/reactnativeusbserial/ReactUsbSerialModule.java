@@ -267,6 +267,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     int test_device_port = 0;
     if (driver.getPorts().size() == 2){
       test_device_port = 1;
+    }else if (driver.getPorts().size() == 0)
+    {
+      throw new IOException("no ports");
     }
     Log.i("BATRobot", "BATRobot ports num: "+ driver.getPorts().size());
 
