@@ -86,7 +86,7 @@ export class UsbSerial {
   }
 
   test() {
-    return test();
+    return UsbSerialModule.test();
   }
 
   // flush(flushReadBuffers, flushWriteBuffers){
