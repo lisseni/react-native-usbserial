@@ -85,6 +85,10 @@ export class UsbSerial {
     });
   }
 
+  test() {
+    return test();
+  }
+
   // flush(flushReadBuffers, flushWriteBuffers){
   //   return UsbSerialModule.flushBuffers(flushReadBuffers, flushWriteBuffers);
   // }
