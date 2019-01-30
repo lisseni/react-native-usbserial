@@ -85,7 +85,10 @@ export class UsbSerial {
     });
   }
 
-  test() {
+  testUnbind() {
+    return UsbSerialModule.test();
+  }
+  testBind() {
     return UsbSerialModule.test();
   }
 
