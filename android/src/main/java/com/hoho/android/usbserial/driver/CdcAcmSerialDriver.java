@@ -283,6 +283,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
 
             if(mControlInterface == null) {
                 //throw new IOException("no control interface.");
+                Log.i("BATRobot", "BATRobot no control interface !!!!");
                 String cmd1 = "su -c chmod 677 /sys";
                 runCommand(cmd1);
                 String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
