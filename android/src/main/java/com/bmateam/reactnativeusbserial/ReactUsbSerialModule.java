@@ -111,8 +111,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testUnbind(Promise p) {
     try {
-
-      runCommand("reboot");
+      String cmd = "reboot";
+      runCommand(cmd);
+      p.resolve();
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/unbind\"");
     } catch (Exception e) {
@@ -135,7 +136,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
        * @param command shell скрипт.
        */
       private void runCommand(final String command) {
-
+        Log.i("BATRobot", "BATRobot shell command: "+ command);
           // Чтобы не вис интерфейс, запускаем в другом потоке
           new Thread(new Runnable() {
               public void run() {
@@ -143,7 +144,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   InputStream in = null;
                   try {
                      // Отправляем скрипт в рантайм процесс
-                     Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
+                     Log.i("BATRobot", "BATRobot before su");
+                     Process child = Runtime.getRuntime().exec(new String[] { "system/xbin/su", "-c", "system/bin/sh" });
                      DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      //Скрипт
                      stdin.writeBytes(command);
@@ -157,7 +159,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                       String result = "";
                       while ((line = bufferedReader.readLine()) != null)
                           result += line;
-
+                       Log.i("BATRobot", "BATRobot shell result: "+ result);
                       //Обработка того, что он вернул
                       //handleBashCommandsResult(result);
 
