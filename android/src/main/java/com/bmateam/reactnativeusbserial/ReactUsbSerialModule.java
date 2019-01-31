@@ -125,8 +125,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try {
       String cmd = "ls /sys";
       runCommand(cmd);
-      String cmd = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/bind";
-      runCommand(cmd);
+      String cmd2 = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/bind";
+      runCommand(cmd2);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/bind\"");
     } catch (Exception e) {
       p.reject(e);
@@ -154,7 +154,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                       DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
                      // String tempcmd2 =  "system/xbin/su " + "-c " + command;
-                      Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
+                      //Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
                       stdin.writeBytes(command);
                       // Выходной и входной потоки
                       out = child.getOutputStream();
