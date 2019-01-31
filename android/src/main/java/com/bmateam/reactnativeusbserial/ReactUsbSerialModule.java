@@ -107,7 +107,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testUnbind(Promise p) {
     try {
-      Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
+
+      runCommand("reboot");
+      //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/unbind\"");
     } catch (Exception e) {
       p.reject(e);
@@ -122,6 +124,61 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       p.reject(e);
     }
   }
+
+  /**
+       * Метод выполняет скрипты shell в отдельном потоке.
+       *
+       * @param command shell скрипт.
+       */
+      public void runCommand(final String command) {
+
+          // Чтобы не вис интерфейс, запускаем в другом потоке
+          new Thread(new Runnable() {
+              public void run() {
+                  OutputStream out = null;
+                  InputStream in = null;
+                  try {
+                     // Отправляем скрипт в рантайм процесс
+                     Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
+                     DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
+                     //Скрипт
+                     stdin.writeBytes(command);
+                      // Выходной и входной потоки
+                      out = child.getOutputStream();
+                      in = child.getInputStream();
+
+                      //Входной поток может что-нибудь вернуть
+                      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+                      String line;
+                      String result = "";
+                      while ((line = bufferedReader.readLine()) != null)
+                          result += line;
+
+                      //Обработка того, что он вернул
+                      //handleBashCommandsResult(result);
+
+                  } catch (IOException e) {
+                      e.printStackTrace();
+                  } finally {
+                      if (in != null) {
+                          try {
+                              in.close();
+                          } catch (IOException e) {
+                              e.printStackTrace();
+                          }
+                      }
+                      if (out != null) {
+                          try {
+                              out.flush();
+                              out.close();
+                          } catch (IOException e) {
+                              e.printStackTrace();
+                          }
+                      }
+                  }
+              }
+          }).start();
+      }
 
   @ReactMethod
   public void getDeviceListAsync(Promise p) {
