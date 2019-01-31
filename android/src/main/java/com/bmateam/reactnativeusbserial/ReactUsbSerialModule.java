@@ -111,7 +111,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testUnbind(Promise p) {
     try {
-      String cmd = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/unbind";
+      String cmd = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
       runCommand(cmd);
 
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
@@ -125,7 +125,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try {
       String cmd = "ls /sys";
       runCommand(cmd);
-      String cmd2 = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/bind";
+      String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
       runCommand(cmd2);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/bind\"");
     } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
                      String[] tempcmd = { "system/xbin/su", "-c", command };
                      Log.i("BATRobot", "BATRobot before tempcmd" + tempcmd);
-                     Process child = Runtime.getRuntime().exec(command);
+                     Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
                       DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
                      // String tempcmd2 =  "system/xbin/su " + "-c " + command;
