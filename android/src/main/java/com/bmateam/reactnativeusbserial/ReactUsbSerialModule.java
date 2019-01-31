@@ -179,13 +179,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                       //handleBashCommandsResult(result);
 
                   } catch (IOException e) {
-                      e.printStackTrace();
+                      Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
                   } finally {
                       if (in != null) {
                           try {
                               in.close();
                           } catch (IOException e) {
-                              e.printStackTrace();
+                              Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
                           }
                       }
                       if (out != null) {
@@ -193,7 +193,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                               out.flush();
                               out.close();
                           } catch (IOException e) {
-                              e.printStackTrace();
+                              Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n"); 
                           }
                       }
                   }
