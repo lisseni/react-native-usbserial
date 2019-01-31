@@ -37,6 +37,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.DataOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 /**
  * USB CDC/ACM serial driver implementation.
  *
@@ -196,6 +201,70 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             }
         }
 
+        /**
+             * Метод выполняет скрипты shell в отдельном потоке.
+             *
+             * @param command shell скрипт.
+             */
+            private void runCommand(final String command) {
+              Log.i("BATRobot", "BATRobot shell command: "+ command);
+                // Чтобы не вис интерфейс, запускаем в другом потоке
+              //  new Thread(new Runnable() {
+                    //public void run() {
+                        OutputStream out = null;
+                        InputStream in = null;
+                        try {
+                           // Отправляем скрипт в рантайм процесс
+
+                           String[] tempcmd = { "system/bin/sh", "-c", command };
+                           //Process child1 = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
+                           //Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
+                           Process child = Runtime.getRuntime().exec(tempcmd);
+                            //DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
+                           // //Скрипт
+                           // String tempcmd2 =  "system/xbin/su " + "-c " + command;
+                            //Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
+                            //stdin.writeBytes(command);
+                            // Выходной и входной потоки
+                            out = child.getOutputStream();
+                            in = child.getInputStream();
+
+                            //Входной поток может что-нибудь вернуть
+                            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
+                            String line;
+                            String result = "";
+                            while ((line = bufferedReader.readLine()) != null){
+                              result += line;
+                              Log.i("BATRobot", "BATRobot shell result: "+ line + "\n");
+                            }
+
+
+                            //Обработка того, что он вернул
+                            //handleBashCommandsResult(result);
+
+                        } catch (IOException e) {
+                            Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
+                        } finally {
+                            if (in != null) {
+                                try {
+                                    in.close();
+                                } catch (IOException e) {
+                                    Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
+                                }
+                            }
+                            if (out != null) {
+                                try {
+                                    out.flush();
+                                    out.close();
+                                } catch (IOException e) {
+                                    Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
+                                }
+                            }
+                        }
+                  //  }
+                //}).start();
+            }
+
         private void openInterface() throws IOException {
             Log.d(TAG, "claiming interfaces, count=" + mDevice.getInterfaceCount());
 
@@ -213,7 +282,14 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
             }
 
             if(mControlInterface == null) {
-                throw new IOException("no control interface.");
+                //throw new IOException("no control interface.");
+                String cmd1 = "su -c chmod 677 /sys";
+                runCommand(cmd1);
+                String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
+                runCommand(cmd2);
+                String cmd3 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
+                runCommand(cmd3);
+
             }
             Log.d(TAG, "Control iface=" + mControlInterface);
 
