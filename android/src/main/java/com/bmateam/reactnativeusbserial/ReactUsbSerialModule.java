@@ -125,6 +125,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try {
       String cmd = "ls /sys";
       runCommand(cmd);
+      String cmd2 = "su -c chmod 777 /sys/bus/usb/drivers/usb/bind";
+      runCommand(cmd2);
       String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
       runCommand(cmd2);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/bind\"");
@@ -141,15 +143,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       private void runCommand(final String command) {
         Log.i("BATRobot", "BATRobot shell command: "+ command);
           // Чтобы не вис интерфейс, запускаем в другом потоке
-          new Thread(new Runnable() {
-              public void run() {
+        //  new Thread(new Runnable() {
+              //public void run() {
                   OutputStream out = null;
                   InputStream in = null;
                   try {
                      // Отправляем скрипт в рантайм процесс
 
-                     String[] tempcmd = { "system/xbin/su", "-c", command };
-                     Process child1 = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
+                     //String[] tempcmd = { "system/xbin/su", "-c", command };
+                     //Process child1 = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
                      //Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
                      Process child = Runtime.getRuntime().exec(command);
                       //DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
@@ -193,8 +195,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                           }
                       }
                   }
-              }
-          }).start();
+            //  }
+          //}).start();
       }
 
   @ReactMethod
