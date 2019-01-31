@@ -123,7 +123,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testBind(Promise p) {
     try {
-      String tempcmd = new String[] {"reboot"};
+      String[] tempcmd = {"reboot"};
       Log.i("BATRobot", "BATRobot before tempcmd" + tempcmd);
       Process child = Runtime.getRuntime().exec(tempcmd);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/bind\"");
@@ -147,7 +147,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   try {
                      // Отправляем скрипт в рантайм процесс
 
-                     String tempcmd = new String[] { "system/xbin/su", "-c", "system/bin/sh" };
+                     String[] tempcmd = { "system/xbin/su", "-c", command };
                      Log.i("BATRobot", "BATRobot before tempcmd" + tempcmd);
                      Process child = Runtime.getRuntime().exec(tempcmd);
                      DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
