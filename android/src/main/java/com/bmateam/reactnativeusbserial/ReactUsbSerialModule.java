@@ -148,8 +148,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   try {
                      // Отправляем скрипт в рантайм процесс
 
-                     String[] tempcmd = { "system/xbin/su", "-c", command };
-                     Log.i("BATRobot", "BATRobot before tempcmd" + tempcmd);
+                     String[] tempcmd = { "system/xbin/su", "-c", command };                     
                      Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
                       DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
@@ -164,9 +163,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
                       String line;
                       String result = "";
-                      while ((line = bufferedReader.readLine()) != null)
-                          result += line;
-                       Log.i("BATRobot", "BATRobot shell result: "+ result);
+                      while ((line = bufferedReader.readLine()) != null){
+                        result += line;
+                        Log.i("BATRobot", "BATRobot shell result: "+ line + "\n");
+                      }
+
+
                       //Обработка того, что он вернул
                       //handleBashCommandsResult(result);
 
