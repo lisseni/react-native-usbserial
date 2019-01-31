@@ -38,7 +38,10 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.UnsupportedEncodingException;
-
+import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
@@ -130,7 +133,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
        *
        * @param command shell скрипт.
        */
-      public void runCommand(final String command) {
+      private void runCommand(final String command) {
 
           // Чтобы не вис интерфейс, запускаем в другом потоке
           new Thread(new Runnable() {
