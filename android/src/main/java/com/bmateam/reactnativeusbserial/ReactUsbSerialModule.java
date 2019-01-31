@@ -111,9 +111,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testUnbind(Promise p) {
     try {
-      String cmd1 = "ls /sys";
-      runCommand(cmd1);
-      String cmd = "echo -n \"usb1\" > /sys/bus/usb/drivers/usb/unbind";
+      String cmd = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/unbind";
       runCommand(cmd);
 
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
@@ -125,7 +123,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testBind(Promise p) {
     try {
-      String cmd = "reboot";
+      String cmd = "ls /sys";
+      runCommand(cmd);
+      String cmd = "echo -n 'usb1' > /sys/bus/usb/drivers/usb/bind";
       runCommand(cmd);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/bind\"");
     } catch (Exception e) {
@@ -150,12 +150,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
                      String[] tempcmd = { "system/xbin/su", "-c", command };
                      Log.i("BATRobot", "BATRobot before tempcmd" + tempcmd);
-                     Process child = Runtime.getRuntime().exec(tempcmd);
+                     Process child = Runtime.getRuntime().exec(command);
                       DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
-                     String tempcmd2 =  "system/xbin/su " + "-c " + command;
-                     Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
-                      stdin.writeBytes(tempcmd2);
+                     // String tempcmd2 =  "system/xbin/su " + "-c " + command;
+                      Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
+                      stdin.writeBytes(command);
                       // Выходной и входной потоки
                       out = child.getOutputStream();
                       in = child.getInputStream();
