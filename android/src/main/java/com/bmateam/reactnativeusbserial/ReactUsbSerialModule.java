@@ -153,7 +153,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                      Process child = Runtime.getRuntime().exec(tempcmd);
                       DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
-                      stdin.writeBytes(tempcmd);
+                     String tempcmd2 =  "system/xbin/su " + "-c " + command;
+                     Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
+                      stdin.writeBytes(tempcmd2);
                       // Выходной и входной потоки
                       out = child.getOutputStream();
                       in = child.getInputStream();
