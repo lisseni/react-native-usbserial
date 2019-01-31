@@ -86,10 +86,10 @@ export class UsbSerial {
   }
 
   testUnbind() {
-    return UsbSerialModule.test();
+    return UsbSerialModule.testUnbind();
   }
   testBind() {
-    return UsbSerialModule.test();
+    return UsbSerialModule.testBind();
   }
 
   // flush(flushReadBuffers, flushWriteBuffers){
