@@ -125,7 +125,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try {
       String cmd1 = "ls /sys";
       runCommand(cmd1);
-      String cmd2 = "su -c chmod 777 /sys/bus/usb/drivers/usb/bind";
+      String cmd2 = "su -c chmod 644 /sys";
       runCommand(cmd2);
       String cmd3 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
       runCommand(cmd3);
@@ -152,10 +152,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                   try {
                      // Отправляем скрипт в рантайм процесс
 
-                     //String[] tempcmd = { "system/xbin/su", "-c", command };
+                     String[] tempcmd = { "system/bin/sh", "-c", command };
                      //Process child1 = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
                      //Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
-                     Process child = Runtime.getRuntime().exec(command);
+                     Process child = Runtime.getRuntime().exec(tempcmd);
                       //DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
                      // //Скрипт
                      // String tempcmd2 =  "system/xbin/su " + "-c " + command;
@@ -193,7 +193,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
                               out.flush();
                               out.close();
                           } catch (IOException e) {
-                              Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n"); 
+                              Log.i("BATRobot", "BATRobot shell result: "+ e.getMessage() + "\n");
                           }
                       }
                   }
