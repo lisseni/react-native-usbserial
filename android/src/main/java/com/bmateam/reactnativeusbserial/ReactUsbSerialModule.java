@@ -42,6 +42,7 @@ import java.io.OutputStream;
 import java.io.InputStream;
 import java.io.DataOutputStream;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
