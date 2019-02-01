@@ -290,7 +290,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                 runCommand(cmd2);
                 String cmd3 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
                 runCommand(cmd3);
-
+                throw new IOException("no control interface.");
             }
             Log.d(TAG, "Control iface=" + mControlInterface);
 
