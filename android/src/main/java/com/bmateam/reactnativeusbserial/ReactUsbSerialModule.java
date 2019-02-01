@@ -111,11 +111,17 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void testUnbind(Promise p) {
     try {
-      String cmd2 = "su -c chmod 677 /sys";
+      // String cmd2 = "su -c chmod 677 /sys";
+      // runCommand(cmd2);
+      // String cmd = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
+      // runCommand(cmd);
+      String cmd1 = "su -c chmod 677 /sys";
+      runCommand(cmd1);
+      String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
+      Thread.sleep(300);
       runCommand(cmd2);
-      String cmd = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
-      runCommand(cmd);
-
+      String cmd3 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
+      runCommand(cmd3);
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
       //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/unbind\"");
     } catch (Exception e) {
