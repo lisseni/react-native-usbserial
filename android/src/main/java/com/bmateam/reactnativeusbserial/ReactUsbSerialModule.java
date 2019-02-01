@@ -43,7 +43,6 @@ import java.io.InputStream;
 import java.io.DataOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.concurrent.TimeUnit;
 import static android.content.ContentValues.TAG;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
@@ -81,14 +80,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  private void onDeviceStateChange()     // Log.i("BATRobot", "BATRobot no control interface !!!!");
-                // String cmd1 = "su -c chmod 677 /sys";
-                // runCommand(cmd1);
-                // String cmd2 = "echo -n usb1 > /sys/bus/usb/drivers/usb/unbind";
-                // //Thread.sleep(300);
-                // runCommand(cmd2);
-                // String cmd3 = "echo -n usb1 > /sys/bus/usb/drivers/usb/bind";
-                // runCommand(cmd3);{
+  private void onDeviceStateChange() {
     stopIoManager();
     startIoManager();
   }
