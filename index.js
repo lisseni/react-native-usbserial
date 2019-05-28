@@ -74,12 +74,18 @@ export class UsbSerial {
   close(deviceObject = {}){
     return UsbSerialModule.closeDevice(deviceObject).then(()=>{
       return new Promise((resolve, reject)=>{
+        if(this.eventListener) {
+          this.eventListener.remove();
+        }
         return resolve();
 
       })
     })
     .catch((err)=>{
       return new Promise((resolve, reject)=>{
+        if(this.eventListener) {
+          this.eventListener.remove();
+        }
         return reject(err);
       })
     });
