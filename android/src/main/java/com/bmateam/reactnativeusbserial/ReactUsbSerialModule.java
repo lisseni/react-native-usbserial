@@ -62,10 +62,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   new SerialInputOutputManager.Listener() {
     @Override
     public void onRunError(Exception e) {
-      Log.v("USBSerialModule", "Runner stopped.");
+      Log.v("BATRobot java", "Runner stopped.");
     }
     @Override
     public void onNewData(final byte[] data) {
+      Log.v("BATRobot java", "onNewData");
       sendEvent(data);
     }
   };
