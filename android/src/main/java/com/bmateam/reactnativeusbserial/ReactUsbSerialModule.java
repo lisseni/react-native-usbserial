@@ -269,8 +269,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       //if (manager.hasPermission(driver.getDevice())) {
         UsbSerialDevice usd = createUsbSerialDevice(manager, driver, portName);
         map.putString("portName", portName);
-        map.putBoolen("connection", true);
-        map.putBoolen("listener", false);
+        map.putBoolean("connection", true);
+        map.putBoolean("listener", false);
         //ConnectionState = true;
         onDeviceStateChange(portName);
         p.resolve(map);
@@ -288,7 +288,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try {
       String portName = deviceObject.getString("comName");
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
-      if (usd){
+      if (usd != null){
         stopIoManager(portName);
         usd.getPort().close();
         usbSerialDriverDict.remove(portName);
@@ -350,7 +350,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     String portName = deviceObject.getString("comName");
     try {
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
-      if (usd){
+      if (usd != null){
 
         byte[] data = new byte[cmd.size()];
         for (int i =0; i< cmd.size(); i++) {
@@ -387,15 +387,16 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private void sendEvent(byte[] data, String portName) {
     WritableArray dataArray = Arguments.createArray();
+    String eventName = UsbEventName + "_" + portName;
      for (int i =0; i< data.length; i++) {
        dataArray.pushInt((data[i])&0xFF);
 
      }
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray, portName);
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
   }
 
 
-  private WritableMap createUsbSerialDevice(UsbManager manager,
+  private UsbSerialDevice createUsbSerialDevice(UsbManager manager,
   UsbSerialDriver driver, String portName) throws IOException {
 
     UsbDeviceConnection connection = manager.openDevice(driver.getDevice());

@@ -66,11 +66,11 @@ public class SerialInputOutputManager implements Runnable {
         /**
          * Called when new incoming data is available.
          */
-        public void onNewData(byte[] data);
+        public void onNewData(byte[] data, String mPortName);
 
         /**
          * Called when {@link SerialInputOutputManager#run()} aborts due to an
-         * error.
+         * error.String
          */
         public void onRunError(Exception e);
     }
@@ -78,8 +78,8 @@ public class SerialInputOutputManager implements Runnable {
     /**
      * Creates a new instance with no listener.
      */
-    public SerialInputOutputManager(UsbSerialPort driver) {
-        this(driver, null);
+    public SerialInputOutputManager(UsbSerialPort driver, String portName) {
+        this(driver, null, portName);
     }
 
     /**
@@ -97,7 +97,11 @@ public class SerialInputOutputManager implements Runnable {
 
     public synchronized Listener getListener() {
         return mListener;
-    }
+
+
+    public synchronized void setPortName(String portName) {
+            mPortName = portName;
+        }
 
     public synchronized Listener getPortName() {
         return mPortName;
@@ -164,7 +168,7 @@ public class SerialInputOutputManager implements Runnable {
         if (len > 0) {
             if (DEBUG) Log.d(TAG, "Read data len=" + len);
             final Listener listener = getListener();
-            String portName = getPortName();
+            final String portName = getPortName();
             if (listener != null) {
                 final byte[] data = new byte[len];
                 mReadBuffer.get(data, 0, len);
