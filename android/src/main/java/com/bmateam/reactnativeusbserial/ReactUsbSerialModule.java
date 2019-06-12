@@ -423,8 +423,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           p.reject("Port is closed");
         }else{
           offset = sPort.write(data, 400);
+          Log.w("BATRobot java writeInDeviceAsync","ok offset ="+offset);
           p.resolve(offset);
-        }        
+        }
       }else{
         p.reject("Port is closed");
       }
