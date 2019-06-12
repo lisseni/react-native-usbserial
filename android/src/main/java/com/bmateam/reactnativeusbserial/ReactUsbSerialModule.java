@@ -314,10 +314,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
    Log.w("BATRobot java getUsbPermission","start");
     try {
       String portName = deviceObject.getString("comName");
+      Log.w("BATRobot java getUsbPermission","portName");
       UsbManager manager = getUsbManager();
+      Log.w("BATRobot java getUsbPermission","manager");
       UsbSerialDriver driver = getUsbSerialDriver(portName, manager);
-
+      Log.w("BATRobot java getUsbPermission","driver");
       UsbDevice device = driver.getDevice();
+      Log.w("BATRobot java getUsbPermission","device");
       if (device == null){
         Log.w("BATRobot java getUsbPermission","device ==null");
       }
@@ -463,8 +466,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     throw new Exception("No available drivers to communicate with devices");
 
     for (UsbSerialDriver drv : availableDrivers) {
-    Log.i("BATRobot", "deviceName: "+ drv.getDevice().getDeviceName());
-      if (drv.getDevice().getDeviceName() == portName){
+      String deviceName = drv.getDevice().getDeviceName();
+    Log.i("BATRobot", "deviceName: "+ deviceName);
+      if (deviceName.equals(portName)){
         Log.i("BATRobot java getUsbSerialDriver", "return driver ok");
         return drv;
       }
