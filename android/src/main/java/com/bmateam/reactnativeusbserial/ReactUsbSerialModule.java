@@ -318,6 +318,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       UsbSerialDriver driver = getUsbSerialDriver(portName, manager);
 
       UsbDevice device = driver.getDevice();
+      if (device == null){
+        Log.w("BATRobot java getUsbPermission","device ==null");
+      }
+
       if (manager.hasPermission(device)){
         p.resolve("hasPermission");
       }
@@ -326,6 +330,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         requestUsbPermission(manager, device, p);
       }
     } catch (Exception e) {
+      Log.w("BATRobot java getUsbPermission","Exception");
       p.reject(e);
     }
   }
@@ -459,8 +464,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     for (UsbSerialDriver drv : availableDrivers) {
     Log.i("BATRobot", "deviceName: "+ drv.getDevice().getDeviceName());
-      if (drv.getDevice().getDeviceName() == portName)
-      return drv;
+      if (drv.getDevice().getDeviceName() == portName){
+        Log.i("BATRobot java getUsbSerialDriver", "return driver ok");
+        return drv;
+      }
+
     }
 
     // Reject if no driver exists for the current productId
