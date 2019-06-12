@@ -346,7 +346,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void writeInDeviceAsync(ReadableMap deviceObject, ReadableArray cmd, Promise p) {
-    int offset = 0
+    int offset = 0;
     String portName = deviceObject.getString("comName");
     try {
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
@@ -440,7 +440,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private UsbSerialDriver getUsbSerialDriver(String portName, UsbManager manager) throws Exception {
     Log.i("BATRobot", "portName: "+ portName);
-    if (portName == '')
+    if (portName == null)
       throw new Error(new Error("The deviceObject is not a valid 'UsbDevice' reference"));
 
     List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
