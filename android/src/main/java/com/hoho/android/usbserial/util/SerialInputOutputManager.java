@@ -97,7 +97,7 @@ public class SerialInputOutputManager implements Runnable {
 
     public synchronized Listener getListener() {
         return mListener;
-
+    }
 
     public synchronized void setPortName(String portName) {
             mPortName = portName;
