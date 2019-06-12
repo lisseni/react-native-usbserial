@@ -36,7 +36,6 @@ import java.nio.ByteBuffer;
  * @author mike wakerly (opensource@hoho.com)
  */
 public class SerialInputOutputManager implements Runnable {
-
     private static final String TAG = SerialInputOutputManager.class.getSimpleName();
     private static final boolean DEBUG = true;
 
@@ -44,7 +43,7 @@ public class SerialInputOutputManager implements Runnable {
     private static final int BUFSIZ = 4096;
 
     private final UsbSerialPort mDriver;
-
+    private String mPortName;
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
 
     // Synchronized by 'mWriteBuffer'
@@ -63,6 +62,7 @@ public class SerialInputOutputManager implements Runnable {
     private Listener mListener;
 
     public interface Listener {
+
         /**
          * Called when new incoming data is available.
          */
@@ -85,9 +85,10 @@ public class SerialInputOutputManager implements Runnable {
     /**
      * Creates a new instance with the provided listener.
      */
-    public SerialInputOutputManager(UsbSerialPort driver, Listener listener) {
+    public SerialInputOutputManager(UsbSerialPort driver, Listener listener, String portName) {
         mDriver = driver;
         mListener = listener;
+        mPortName = portName;
     }
 
     public synchronized void setListener(Listener listener) {
@@ -96,6 +97,10 @@ public class SerialInputOutputManager implements Runnable {
 
     public synchronized Listener getListener() {
         return mListener;
+    }
+
+    public synchronized Listener getPortName() {
+        return mPortName;
     }
 
     public void writeAsync(byte[] data) {
@@ -159,10 +164,11 @@ public class SerialInputOutputManager implements Runnable {
         if (len > 0) {
             if (DEBUG) Log.d(TAG, "Read data len=" + len);
             final Listener listener = getListener();
+            String portName = getPortName();
             if (listener != null) {
                 final byte[] data = new byte[len];
                 mReadBuffer.get(data, 0, len);
-                listener.onNewData(data);
+                listener.onNewData(data, portName);
             }
             mReadBuffer.clear();
         }

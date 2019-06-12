@@ -51,49 +51,75 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
   private static final String UsbEventName="Data";
   private ReactApplicationContext reactContext;
-  private SerialInputOutputManager mSerialIoManager;
-  private UsbSerialPort mSerialPort = null;
+  //private SerialInputOutputManager mSerialIoManager;
+  private HashMap<String, SerialInputOutputManager> mSerialIoManagerDict;
+  private HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
+  private WritableArray openedDeviceArray = Arguments.createArray();
 
-  private final SerialInputOutputManager.Listener mListener =
-  new SerialInputOutputManager.Listener() {
-    @Override
-    public void onRunError(Exception e) {
-      Log.v("USBSerialModule", "Runner stopped.");
-    }
-    @Override
-    public void onNewData(final byte[] data) {
-      sendEvent(data);
-    }
-  };
+  private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
+  // private final SerialInputOutputManager.Listener mListener =
+  // new SerialInputOutputManager.Listener() {
+  //   @Override
+  //   public void onRunError(Exception e) {
+  //     Log.v("USBSerialModule", "Runner stopped.");
+  //   }
+  //   @Override
+  //   public void onNewData(final byte[] data) {
+  //     sendEvent(data);
+  //   }
+  // };
 
   public ReactUsbSerialModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
   }
 
-  private void stopIoManager() {
-    if (mSerialIoManager != null) {
-      Log.i("USBSerialModule", "Stopping io manager ..");
-      mSerialIoManager.stop();
-      mSerialIoManager = null;
+  private void stopIoManager(String portName) {
+    UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+    if (usd !=null){
+      SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
+      if (mSerialIoManager != null) {
+        Log.i("USBSerialModule", "Stopping io manager ..");
+        mSerialIoManager.stop();
+        mSerialIoManagerDict.remove(portName);
+        mListenerDict.remove(portName);
+      }
     }
+
   }
 
-  private void onDeviceStateChange() {
-    stopIoManager();
-    startIoManager();
+  private void onDeviceStateChange(String portName) {
+    stopIoManager(portName);
+    startIoManager(portName);
   }
 
-  private void startIoManager() {
+  private void startIoManager(String portName) {
     try{
-      if (mSerialPort == null) {
+      UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      if (usd == null) {
         throw new Exception(String.format("No device opened"));
       }
 
-      if (mSerialPort != null) {
+      UsbSerialPort sPort = usd.getPort();
+
+      if (sPort != null) {
         Log.v("USBSerialModule", "Starting io manager ..");
-        mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
+        SerialInputOutputManager.Listener mListener =
+        new SerialInputOutputManager.Listener() {
+          @Override
+          public void onRunError(Exception e) {
+            Log.v("BATRobot", "Runner stopped.");
+          }
+          @Override
+          public void onNewData(final byte[] data, String mPortName) {
+            sendEvent(data,mPortName);
+          }
+        };
+        mListenerDict.put(portName, mListener);
+        SerialInputOutputManager mSerialIoManager = new SerialInputOutputManager(sPort, mListener, portName);
+        mSerialIoManagerDict.put(portName, mSerialIoManager);
+
         mExecutor.submit(mSerialIoManager);
       }
 
@@ -208,6 +234,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getDeviceListAsync(Promise p) {
+    Log.v("BATRobot java", "getDeviceListAsync");
     try {
       UsbManager usbManager = getUsbManager();
 
@@ -235,15 +262,18 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   public void openDeviceAsync(ReadableMap deviceObject, Promise p) {
 
     try {
-      int prodId = deviceObject.getInt("productId");
+      String portName = deviceObject.getString("comName");
       UsbManager manager = getUsbManager();
-      UsbSerialDriver driver = getUsbSerialDriver(prodId, manager);
-
+      UsbSerialDriver driver = getUsbSerialDriver(portName, manager);
+      WritableMap map = Arguments.createMap();
       //if (manager.hasPermission(driver.getDevice())) {
-        WritableMap usd = createUsbSerialDevice(manager, driver);
-        ConnectionState = true;
-        onDeviceStateChange();
-        p.resolve(usd);
+        UsbSerialDevice usd = createUsbSerialDevice(manager, driver, portName);
+        map.putString("portName", portName);
+        map.putBoolen("connection", true);
+        map.putBoolen("listener", false);
+        //ConnectionState = true;
+        onDeviceStateChange(portName);
+        p.resolve(map);
       // } else {
       //   requestUsbPermission(manager, driver.getDevice(), p);
       // }
@@ -256,11 +286,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   public void closeDevice(ReadableMap deviceObject, Promise p) {
 
     try {
-      if (ConnectionState){
-        stopIoManager();
-        mSerialPort.close();
-        mSerialPort = null;
-        ConnectionState = false;
+      String portName = deviceObject.getString("comName");
+      UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      if (usd){
+        stopIoManager(portName);
+        usd.getPort().close();
+        usbSerialDriverDict.remove(portName);
+        //ConnectionState = false;
         //usbSerialDriverDict
         p.resolve("Port closed");
       }else{
@@ -275,9 +307,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   public void getUsbPermission(ReadableMap deviceObject, Promise p) {
 
     try {
-      int prodId = deviceObject.getInt("productId");
+      String portName = deviceObject.getString("comName");
       UsbManager manager = getUsbManager();
-      UsbSerialDriver driver = getUsbSerialDriver(prodId, manager);
+      UsbSerialDriver driver = getUsbSerialDriver(portName, manager);
 
       UsbDevice device = driver.getDevice();
       if (manager.hasPermission(device)){
@@ -313,15 +345,18 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void writeInDeviceAsync(ReadableArray cmd, Promise p) {
-    int offset = 0;
+  public void writeInDeviceAsync(ReadableMap deviceObject, ReadableArray cmd, Promise p) {
+    int offset = 0
+    String portName = deviceObject.getString("comName");
     try {
-      if (ConnectionState){
+      UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      if (usd){
+
         byte[] data = new byte[cmd.size()];
         for (int i =0; i< cmd.size(); i++) {
           data[i] = (byte)cmd.getInt(i);
         }
-        offset = mSerialPort.write(data, 400);
+        offset = usd.getPort().write(data, 400);
 
         p.resolve(offset);
       }else{
@@ -336,32 +371,32 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private void readAsync(Promise promise) {
 
-    if (mSerialPort != null) {
-      try {
-        byte buffer[] = new byte[16];
-        int numBytesRead = mSerialPort.read(buffer, 1000);
-        Log.v("ReactNative", "blah");
-        promise.resolve(buffer);
-      } catch (IOException e) {
-        promise.reject(e);
-      }
-    } else {
+    // if (mSerialPort != null) {
+    //   try {
+    //     byte buffer[] = new byte[16];
+    //     int numBytesRead = mSerialPort.read(buffer, 1000);
+    //     Log.v("ReactNative", "blah");
+    //     promise.resolve(buffer);
+    //   } catch (IOException e) {
+    //     promise.reject(e);
+    //   }
+    // } else {
       promise.resolve("no Port");
-    }
+    //}
   }
 
-  private void sendEvent(byte[] data) {
+  private void sendEvent(byte[] data, String portName) {
     WritableArray dataArray = Arguments.createArray();
      for (int i =0; i< data.length; i++) {
        dataArray.pushInt((data[i])&0xFF);
 
      }
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray, portName);
   }
 
 
   private WritableMap createUsbSerialDevice(UsbManager manager,
-  UsbSerialDriver driver) throws IOException {
+  UsbSerialDriver driver, String portName) throws IOException {
 
     UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
 
@@ -375,25 +410,21 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
     Log.i("BATRobot", "BATRobot ports num: "+ driver.getPorts().size());
 
-    mSerialPort = driver.getPorts().get(test_device_port);
+    UsbSerialPort port = driver.getPorts().get(test_device_port);
 
-    //mSerialPort = driver.getPorts().get(0);
-
-
-    mSerialPort.open(connection);
-    mSerialPort.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
+    port.open(connection);
+    port.setParameters(115200, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
 
     String id = generateId();
-    UsbSerialDevice usd = new UsbSerialDevice(mSerialPort);
+    UsbSerialDevice usd = new UsbSerialDevice(port);
     WritableMap map = Arguments.createMap();
-
+    WritableMap currentDev = Arguments.createMap();
 
     // Add UsbSerialDevice to the usbSerialDriverDict map
-    usbSerialDriverDict.put(id, usd);
-
+    usbSerialDriverDict.put(portName, usd);
     map.putString("id", id);
 
-    return map;
+    return usd;
   }
 
 
@@ -407,10 +438,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     return usbManager;
   }
 
-  private UsbSerialDriver getUsbSerialDriver(int prodId, UsbManager manager) throws Exception {
-
-    if (prodId == 0)
-    throw new Error(new Error("The deviceObject is not a valid 'UsbDevice' reference"));
+  private UsbSerialDriver getUsbSerialDriver(String portName, UsbManager manager) throws Exception {
+    Log.i("BATRobot", "portName: "+ portName);
+    if (portName == '')
+      throw new Error(new Error("The deviceObject is not a valid 'UsbDevice' reference"));
 
     List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
 
@@ -419,13 +450,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     throw new Exception("No available drivers to communicate with devices");
 
     for (UsbSerialDriver drv : availableDrivers) {
-
-      if (drv.getDevice().getProductId() == prodId)
+    Log.i("BATRobot", "deviceName: "+ drv.getDevice().getDeviceName());
+      if (drv.getDevice().getDeviceName() == portName)
       return drv;
     }
 
     // Reject if no driver exists for the current productId
-    throw new Exception(String.format("No driver found for productId '%s'", prodId));
+    throw new Exception(String.format("No driver found for PortName '%s'", portName));
   }
 
   private void registerBroadcastReceiver(final Promise p) {
@@ -444,7 +475,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
               UsbManager manager = getUsbManager();
 
               try {
-                WritableMap usd = createUsbSerialDevice(manager,
+                UsbSerialDevice usd = createUsbSerialDevice(manager,
                 getUsbSerialDriver(device.getProductId(), manager));
 
                 p.resolve(usd);

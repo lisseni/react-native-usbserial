@@ -5,7 +5,7 @@ import {
   NativeModules,
   DeviceEventEmitter
 } from 'react-native';
-import UsbSerialDevice from './UsbSerialDevice';
+//import UsbSerialDevice from './UsbSerialDevice';
 
 const UsbSerialModule = NativeModules.UsbSerial;
 
@@ -22,6 +22,7 @@ export class UsbSerial {
   }
 
   openDeviceAsync(deviceObject = {}) {
+    console.log("BATRobot index.js openDeviceAsync");
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
       return new Promise((resolve)=>{
         const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
@@ -59,8 +60,8 @@ export class UsbSerial {
     });
   }
 
-  write(cmd){
-    return UsbSerialModule.writeInDeviceAsync(cmd).then((res)=>{
+  write(eviceObject = {},cmd){
+    return UsbSerialModule.writeInDeviceAsync(deviceObject,cmd).then((res)=>{
       return new Promise((resolve)=>{
         return resolve(res);
       })

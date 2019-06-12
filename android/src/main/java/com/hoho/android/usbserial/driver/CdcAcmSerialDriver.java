@@ -207,7 +207,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
              * @param command shell скрипт.
              */
             private void runCommand(final String command) {
-              Log.i("BATRobot", "BATRobot shell command: "+ command);
+              //Log.i("BATRobot", "BATRobot shell command: "+ command);
                 // Чтобы не вис интерфейс, запускаем в другом потоке
               //  new Thread(new Runnable() {
                     //public void run() {
@@ -217,14 +217,7 @@ public class CdcAcmSerialDriver implements UsbSerialDriver {
                            // Отправляем скрипт в рантайм процесс
 
                            String[] tempcmd = { "system/bin/sh", "-c", command };
-                           //Process child1 = Runtime.getRuntime().exec(new String[] { "su", "-c", "system/bin/sh" });
-                           //Process child = Runtime.getRuntime().exec(new String[] { "su", "-c", command });
                            Process child = Runtime.getRuntime().exec(tempcmd);
-                            //DataOutputStream stdin = new DataOutputStream(child.getOutputStream());
-                           // //Скрипт
-                           // String tempcmd2 =  "system/xbin/su " + "-c " + command;
-                            //Log.i("BATRobot", "BATRobot tempcmd2" + tempcmd2);
-                            //stdin.writeBytes(command);
                             // Выходной и входной потоки
                             out = child.getOutputStream();
                             in = child.getInputStream();
