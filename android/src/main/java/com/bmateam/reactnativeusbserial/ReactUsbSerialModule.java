@@ -76,16 +76,28 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   private void stopIoManager(String portName) {
-    UsbSerialDevice usd = usbSerialDriverDict.get(portName);
-    if (usd !=null){
-      SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
-      if (mSerialIoManager != null) {
-        Log.i("USBSerialModule", "Stopping io manager ..");
-        mSerialIoManager.stop();
-        mSerialIoManagerDict.remove(portName);
-        mListenerDict.remove(portName);
+      Log.w("BATRobot java","stopIoManager portName ="+portName);
+    try{
+
+      UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      Log.w("BATRobot java","usd");
+      if (usd !=null){
+        Log.w("BATRobot java","sstopIoManager EST listener");
+        SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
+        if (mSerialIoManager != null) {
+          Log.i("USBSerialModule", "Stopping io manager ..");
+          mSerialIoManager.stop();
+          mSerialIoManagerDict.remove(portName);
+          mListenerDict.remove(portName);
+        }
+      }else{
+        Log.w("BATRobot java","stopIoManager no listener ok");
       }
+    }catch (Exception e) {
+      Log.w("BATRobot java","stopIoManager Exception");
+      e.printStackTrace();
     }
+
 
   }
 
@@ -97,17 +109,19 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   private void startIoManager(String portName) {
+      Log.w("BATRobot java","startIoManager portName ="+portName);
     try{
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      Log.w("BATRobot java","usd");
       if (usd == null) {
         Log.w("BATRobot java","startIoManager No device opened");
         throw new Exception(String.format("No device opened"));
       }
 
       UsbSerialPort sPort = usd.getPort();
-
+      Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
-        Log.i("BATRobot java", "Starting io manager ..");
+        Log.i("BATRobot java", "Starting io manager mListener start");
         SerialInputOutputManager.Listener mListener =
         new SerialInputOutputManager.Listener() {
           @Override
@@ -119,16 +133,20 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             sendEvent(data,mPortName);
           }
         };
+        Log.w("BATRobot java","Starting io manager mListener");
         mListenerDict.put(portName, mListener);
         SerialInputOutputManager mSerialIoManager = new SerialInputOutputManager(sPort, mListener, portName);
+        Log.w("BATRobot java","Starting io manager mSerialIoManager");
         mSerialIoManagerDict.put(portName, mSerialIoManager);
 
         mExecutor.submit(mSerialIoManager);
+        Log.w("BATRobot java","Starting io manager mExecutor.submit");
       }else{
         Log.i("BATRobot java", "Start io manager error sPort == null");
       }
 
     }catch (Exception e) {
+      Log.w("BATRobot java","Starting io manager Exception");
       e.printStackTrace();
     }
 
