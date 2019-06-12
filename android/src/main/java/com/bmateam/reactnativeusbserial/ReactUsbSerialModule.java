@@ -82,13 +82,19 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       Log.w("BATRobot java","usd");
       if (usd !=null){
-        Log.w("BATRobot java","sstopIoManager EST listener");
-        SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
-        if (mSerialIoManager != null) {
-          Log.i("USBSerialModule", "Stopping io manager ..");
-          mSerialIoManager.stop();
-          mSerialIoManagerDict.remove(portName);
-          mListenerDict.remove(portName);
+        Log.w("BATRobot java","sstopIoManager usd !=null");
+
+        if (mSerialIoManagerDict.isEmpty() == false){
+          SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
+          Log.w("BATRobot java","stopIoManager mSerialIoManager");
+          if (mSerialIoManager != null) {
+            Log.i("USBSerialModule", "Stopping io manager ..");
+            mSerialIoManager.stop();
+            mSerialIoManagerDict.remove(portName);
+            mListenerDict.remove(portName);
+          }
+        }else{
+          Log.w("BATRobot java","stopIoManager no listener ok");
         }
       }else{
         Log.w("BATRobot java","stopIoManager no listener ok");
