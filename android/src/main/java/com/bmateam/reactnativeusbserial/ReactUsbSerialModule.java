@@ -51,24 +51,24 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
   private static final String UsbEventName="Data";
   private ReactApplicationContext reactContext;
-  //private SerialInputOutputManager mSerialIoManager;
-  private HashMap<String, SerialInputOutputManager> mSerialIoManagerDict;
-  private HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
+  private SerialInputOutputManager mSerialIoManager;
+  //private final HashMap<String, SerialInputOutputManager> mSerialIoManagerDict;
+  private final HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
   private WritableArray openedDeviceArray = Arguments.createArray();
 
-  private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
-  // private final SerialInputOutputManager.Listener mListener =
-  // new SerialInputOutputManager.Listener() {
-  //   @Override
-  //   public void onRunError(Exception e) {
-  //     Log.v("USBSerialModule", "Runner stopped.");
-  //   }
-  //   @Override
-  //   public void onNewData(final byte[] data) {
-  //     sendEvent(data);
-  //   }
-  // };
+  //private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
+  private final SerialInputOutputManager.Listener mListener =
+  new SerialInputOutputManager.Listener() {
+    @Override
+    public void onRunError(Exception e) {
+      Log.v("USBSerialModule", "Runner stopped.");
+    }
+    @Override
+    public void onNewData(final byte[] data, String portName) {
+      sendEvent(data, String portName);
+    }
+  };
 
   public ReactUsbSerialModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -79,23 +79,30 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       Log.w("BATRobot java","stopIoManager portName ="+portName);
     try{
 
+      if (usbSerialDriverDict.isEmpty()){
+        Log.w("BATRobot java","usbSerialDriverDict.isEmpty");
+        return;
+      }
+
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       Log.w("BATRobot java","usd");
       if (usd !=null){
         Log.w("BATRobot java","sstopIoManager usd !=null");
 
-        if (mSerialIoManagerDict.isEmpty() == false){
-          SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
-          Log.w("BATRobot java","stopIoManager mSerialIoManager");
+        //if (!mSerialIoManagerDict.isEmpty()){
+          //Log.w("BATRobot java","stopIoManager mSerialIoManagerDict not empty");
+          //SerialInputOutputManager mSerialIoManager = mSerialIoManagerDict.get(portName);
+          //Log.w("BATRobot java","stopIoManager mSerialIoManager");
           if (mSerialIoManager != null) {
             Log.i("USBSerialModule", "Stopping io manager ..");
             mSerialIoManager.stop();
-            mSerialIoManagerDict.remove(portName);
-            mListenerDict.remove(portName);
+            //mSerialIoManagerDict.remove(portName);
+            //mListenerDict.remove(portName);
+            mSerialIoManager = null;
           }
-        }else{
-          Log.w("BATRobot java","stopIoManager no listener ok");
-        }
+        // }else{
+        //   Log.w("BATRobot java","stopIoManager no listener ok");
+        // }
       }else{
         Log.w("BATRobot java","stopIoManager no listener ok");
       }
@@ -117,6 +124,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void startIoManager(String portName) {
       Log.w("BATRobot java","startIoManager portName ="+portName);
     try{
+      // if (usbSerialDriverDict.isEmpty()){
+      //     Log.w("BATRobot java","startIoManager No device opened");
+      //     throw new Exception(String.format("No device opened"));
+      // }
+
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       Log.w("BATRobot java","usd");
       if (usd == null) {
@@ -128,7 +140,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
         Log.i("BATRobot java", "Starting io manager mListener start");
-        SerialInputOutputManager.Listener mListener =
+        /*SerialInputOutputManager.Listener mListener =
         new SerialInputOutputManager.Listener() {
           @Override
           public void onRunError(Exception e) {
@@ -140,10 +152,11 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           }
         };
         Log.w("BATRobot java","Starting io manager mListener");
-        mListenerDict.put(portName, mListener);
-        SerialInputOutputManager mSerialIoManager = new SerialInputOutputManager(sPort, mListener, portName);
+        mListenerDict.put(portName, mListener);*/
+        //SerialInputOutputManager
+        mSerialIoManager = new SerialInputOutputManager(sPort, mListener, portName);
         Log.w("BATRobot java","Starting io manager mSerialIoManager");
-        mSerialIoManagerDict.put(portName, mSerialIoManager);
+        //mSerialIoManagerDict.put(portName, mSerialIoManager);
 
         mExecutor.submit(mSerialIoManager);
         Log.w("BATRobot java","Starting io manager mExecutor.submit");
@@ -317,6 +330,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     try {
       String portName = deviceObject.getString("comName");
+      if (usbSerialDriverDict.isEmpty()){
+        p.reject("Port wasn't opened");
+      }
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       if (usd != null){
         stopIoManager(portName);
@@ -387,6 +403,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     int offset = 0;
     String portName = deviceObject.getString("comName");
     try {
+      if (usbSerialDriverDict.isEmpty()){
+        p.reject("Port is closed");
+      }
+
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       if (usd != null){
 
