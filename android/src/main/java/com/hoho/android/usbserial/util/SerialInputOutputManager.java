@@ -103,7 +103,7 @@ public class SerialInputOutputManager implements Runnable {
             mPortName = portName;
         }
 
-    public synchronized Listener getPortName() {
+    public synchronized String getPortName() {
         return mPortName;
     }
 

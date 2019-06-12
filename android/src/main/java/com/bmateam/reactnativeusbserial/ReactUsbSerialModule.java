@@ -477,7 +477,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
               try {
                 UsbSerialDevice usd = createUsbSerialDevice(manager,
-                getUsbSerialDriver(device.getProductId(), manager));
+                getUsbSerialDriver(device.getDeviceName(), manager));
 
                 p.resolve(usd);
               } catch (Exception e) {
