@@ -39,6 +39,7 @@ export class UsbSerial {
   }
 
   getUsbPermission(deviceObject = {}){
+    console.log("BATRobot index.js getUsbPermission");
     return UsbSerialModule.getUsbPermission(deviceObject).then((res)=>{
       return new Promise((resolve, reject)=>{
         return resolve(res);

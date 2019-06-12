@@ -311,7 +311,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void getUsbPermission(ReadableMap deviceObject, Promise p) {
-
+   Log.w("BATRobot java getUsbPermission","start");
     try {
       String portName = deviceObject.getString("comName");
       UsbManager manager = getUsbManager();
@@ -333,7 +333,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void requestUsbPermission(UsbManager manager,
   UsbDevice device,
   Promise p) {
-
+    Log.w("BATRobot java requestUsbPermission","start");
     try {
       ReactApplicationContext rAppContext = getReactApplicationContext();
       PendingIntent permIntent = PendingIntent.getBroadcast(rAppContext, 0, new Intent(ACTION_USB_PERMISSION), 0);
