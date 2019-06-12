@@ -90,6 +90,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   private void onDeviceStateChange(String portName) {
+    Log.w("BATRobot java","onDeviceStateChange portName ="+portName);
+
     stopIoManager(portName);
     startIoManager(portName);
   }
@@ -98,13 +100,14 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     try{
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       if (usd == null) {
+        Log.w("BATRobot java","startIoManager No device opened");
         throw new Exception(String.format("No device opened"));
       }
 
       UsbSerialPort sPort = usd.getPort();
 
       if (sPort != null) {
-        Log.v("USBSerialModule", "Starting io manager ..");
+        Log.i("BATRobot java", "Starting io manager ..");
         SerialInputOutputManager.Listener mListener =
         new SerialInputOutputManager.Listener() {
           @Override
@@ -121,6 +124,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         mSerialIoManagerDict.put(portName, mSerialIoManager);
 
         mExecutor.submit(mSerialIoManager);
+      }else{
+        Log.i("BATRobot java", "Start io manager error sPort == null");
       }
 
     }catch (Exception e) {
@@ -260,7 +265,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void openDeviceAsync(ReadableMap deviceObject, Promise p) {
-
+    Log.w("BATRobot java ","openDeviceAsync start");
     try {
       String portName = deviceObject.getString("comName");
       UsbManager manager = getUsbManager();
@@ -271,6 +276,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         map.putString("portName", portName);
         map.putBoolean("connection", true);
         map.putBoolean("listener", false);
+        Log.w("BATRobot java","port opened");
         //ConnectionState = true;
         onDeviceStateChange(portName);
         p.resolve(map);
@@ -316,7 +322,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         p.resolve("hasPermission");
       }
       else{
-        Log.w("USBSerialModule","device has no permission");
+        Log.w("BATRobot java getUsbPermission","device has no permission");
         requestUsbPermission(manager, device, p);
       }
     } catch (Exception e) {
@@ -387,12 +393,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private void sendEvent(byte[] data, String portName) {
     WritableArray dataArray = Arguments.createArray();
-    String eventName = UsbEventName + "_" + portName;
+    //String eventName = UsbEventName + "_" + portName;
      for (int i =0; i< data.length; i++) {
        dataArray.pushInt((data[i])&0xFF);
 
      }
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
+     Log.i("BATRobot java", "sendEvent!");
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
   }
 
 

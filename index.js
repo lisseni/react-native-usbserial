@@ -18,22 +18,24 @@ export class UsbSerial {
   }
 
   getDeviceListAsync() {
+    console.log("BATRobot index.js getDeviceListAsync");
     return UsbSerialModule.getDeviceListAsync();
   }
 
   openDeviceAsync(deviceObject = {}) {
     console.log("BATRobot index.js openDeviceAsync");
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
-      return new Promise((resolve)=>{
-        const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        return resolve(usd);
+      //return new Promise((resolve)=>{
+        //const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
+        console.log("BATRobot index.js resolve" + JSON.stringify(usbSerialDevNativeObject));
+        return resolve(usbSerialDevNativeObject);
       })
       .catch((err)=>{
         return new Promise((reject)=>{
           return reject(err);
         })
       })
-    });
+  //  });
   }
 
   getUsbPermission(deviceObject = {}){
