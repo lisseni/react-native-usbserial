@@ -447,7 +447,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   private UsbSerialDriver getUsbSerialDriver(String portName, UsbManager manager) throws Exception {
-    Log.i("BATRobot", "portName: "+ portName);
+    Log.i("BATRobot java", "portName: "+ portName);
     if (portName == null)
       throw new Error(new Error("The deviceObject is not a valid 'UsbDevice' reference"));
 
@@ -467,7 +467,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     throw new Exception(String.format("No driver found for PortName '%s'", portName));
   }
 
-  private void registerBroadcastReceiver(final Promise p) {
+    private void registerBroadcastReceiver(final Promise p) {
     IntentFilter intFilter = new IntentFilter(ACTION_USB_PERMISSION);
     final BroadcastReceiver receiver = new BroadcastReceiver() {
 
@@ -482,14 +482,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
             if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
               UsbManager manager = getUsbManager();
 
-              try {
-                UsbSerialDevice usd = createUsbSerialDevice(manager,
-                getUsbSerialDriver(device.getDeviceName(), manager),device.getDeviceName());
+              // try {
+              //   Log.i("BATRobot java", "try createUsbSerialDevice");
+              //   WritableMap usd = createUsbSerialDeviceOld(manager,
+              //   getUsbSerialDriver(device.getDeviceName(), manager));
 
-                p.resolve(usd);
-              } catch (Exception e) {
-                p.reject(e);
-              }
+                p.resolve('permition ok');
+              // } catch (Exception e) {
+              //   p.reject(e);
+              // }
 
             } else {
               p.resolve(new Exception(String.format("Permission denied by user for device '%s'", device
