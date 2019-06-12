@@ -64,7 +64,7 @@ export class UsbSerial {
     });
   }
 
-  write(eviceObject = {},cmd){
+  write(deviceObject = {},cmd){
     console.log("BATRobot index.js write");
     return UsbSerialModule.writeInDeviceAsync(deviceObject,cmd).then((res)=>{
       return new Promise((resolve)=>{
