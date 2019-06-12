@@ -58,12 +58,14 @@ export class UsbSerial {
       this.eventListener.remove();
       //DeviceEventEmitter.removeListener('Data', handler)
     }
+    console.log("BATRobot index.js monitor");
     this.eventListener = DeviceEventEmitter.addListener('Data',function(e: Event) {
       handler(e);
     });
   }
 
   write(eviceObject = {},cmd){
+    console.log("BATRobot index.js write");
     return UsbSerialModule.writeInDeviceAsync(deviceObject,cmd).then((res)=>{
       return new Promise((resolve)=>{
         return resolve(res);

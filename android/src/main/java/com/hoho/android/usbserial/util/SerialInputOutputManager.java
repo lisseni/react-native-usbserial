@@ -66,7 +66,7 @@ public class SerialInputOutputManager implements Runnable {
         /**
          * Called when new incoming data is available.
          */
-        public void onNewData(byte[] data, String mPortName);
+        public void onNewData(byte[] data);
 
         /**
          * Called when {@link SerialInputOutputManager#run()} aborts due to an
@@ -172,7 +172,7 @@ public class SerialInputOutputManager implements Runnable {
             if (listener != null) {
                 final byte[] data = new byte[len];
                 mReadBuffer.get(data, 0, len);
-                listener.onNewData(data, portName);
+                listener.onNewData(data);
             }
             mReadBuffer.clear();
         }

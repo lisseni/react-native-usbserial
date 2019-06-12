@@ -65,8 +65,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       Log.v("USBSerialModule", "Runner stopped.");
     }
     @Override
-    public void onNewData(final byte[] data, String portName) {
-      sendEvent(data, portName);
+    public void onNewData(final byte[] data) {
+      sendEvent(data);
     }
   };
 
@@ -400,28 +400,37 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void writeInDeviceAsync(ReadableMap deviceObject, ReadableArray cmd, Promise p) {
+    Log.w("BATRobot java writeInDeviceAsync","start");
     int offset = 0;
     String portName = deviceObject.getString("comName");
     try {
+      Log.w("BATRobot java writeInDeviceAsync","start2");
       if (usbSerialDriverDict.isEmpty()){
         p.reject("Port is closed");
       }
 
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+      Log.w("BATRobot java writeInDeviceAsync","usd");
       if (usd != null){
 
         byte[] data = new byte[cmd.size()];
         for (int i =0; i< cmd.size(); i++) {
           data[i] = (byte)cmd.getInt(i);
         }
-        offset = usd.getPort().write(data, 400);
-
-        p.resolve(offset);
+        UsbSerialPort sPort = usd.getPort();
+        if (sPort == null){
+          Log.w("BATRobot java writeInDeviceAsync","sPort == null");
+          p.reject("Port is closed");
+        }else{
+          offset = sPort.write(data, 400);
+          p.resolve(offset);
+        }        
       }else{
         p.reject("Port is closed");
       }
 
     } catch (Exception e) {
+      Log.w("BATRobot java writeInDeviceAsync","Exception");
       p.reject(e);
     }
   }
@@ -443,7 +452,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     //}
   }
 
-  private void sendEvent(byte[] data, String portName) {
+  private void sendEvent(byte[] data) {
     WritableArray dataArray = Arguments.createArray();
     //String eventName = UsbEventName + "_" + portName;
      for (int i =0; i< data.length; i++) {
