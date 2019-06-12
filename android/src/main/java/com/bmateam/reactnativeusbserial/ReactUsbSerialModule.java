@@ -66,7 +66,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
     @Override
     public void onNewData(final byte[] data, String portName) {
-      sendEvent(data, String portName);
+      sendEvent(data, portName);
     }
   };
 
