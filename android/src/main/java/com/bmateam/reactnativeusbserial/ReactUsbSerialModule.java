@@ -161,7 +161,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         Log.w("BATRobot java","Starting io manager mListener");
         mListenerDict.put(portName, mListener);*/
         //SerialInputOutputManager
-        mSerialIoManager = new SerialInputOutputManager(mSerialPort, mListener);
+        mSerialIoManager = new SerialInputOutputManager(sPort, mListener);
         mExecutor.submit(mSerialIoManager);
       }else{
         Log.i("BATRobot java", "Start io manager error sPort == null");
