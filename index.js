@@ -55,7 +55,7 @@ export class UsbSerial {
 
   monitor(handler){
     if(this.eventListener) {
-      this.eventListener.remove();
+      this.eventListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
     console.log("BATRobot index.js monitor");
@@ -65,7 +65,7 @@ export class UsbSerial {
   }
 
   write(deviceObject = {},cmd){
-    console.log("BATRobot index.js write" + JSON.stringify(deviceObject));    
+    console.log("BATRobot index.js write" + JSON.stringify(deviceObject));
     return UsbSerialModule.writeInDeviceAsync(deviceObject,cmd).then((res)=>{
       return new Promise((resolve)=>{
         return resolve(res);
@@ -80,7 +80,6 @@ export class UsbSerial {
 
   close(deviceObject = {}){
     if(this.eventListener) {
-      this.eventListener.remove();
       this.eventListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
