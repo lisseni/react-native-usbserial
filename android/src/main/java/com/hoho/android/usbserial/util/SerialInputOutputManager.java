@@ -43,7 +43,7 @@ public class SerialInputOutputManager implements Runnable {
     private static final int READ_WAIT_MILLIS = 200;
     private static final int BUFSIZ = 4096;
 
-    private final UsbSerialPort mDriver;
+    private UsbSerialPort mDriver;
     private UsbSerialPort mDriver2;
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
     private final ByteBuffer mReadBuffer2 = ByteBuffer.allocate(BUFSIZ);
@@ -115,7 +115,13 @@ public class SerialInputOutputManager implements Runnable {
 
     public synchronized UsbSerialPort getDriver2() {
         return mDriver2;
-    }
+
+    public synchronized void setDriver(UsbSerialPort driver) {
+            mDriver = driver;
+        }
+
+    public synchronized UsbSerialPort getDriver() {
+            return mDriver;
 
     public void writeAsync(byte[] data) {
         synchronized (mWriteBuffer) {
