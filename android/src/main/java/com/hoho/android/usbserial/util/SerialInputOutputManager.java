@@ -44,12 +44,12 @@ public class SerialInputOutputManager implements Runnable {
     private static final int BUFSIZ = 4096;
 
     private final UsbSerialPort mDriver;
-
+    private final UsbSerialPort mDriver2;
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
-
+    private final ByteBuffer mReadBuffer2 = ByteBuffer.allocate(BUFSIZ);
     // Synchronized by 'mWriteBuffer'
     private final ByteBuffer mWriteBuffer = ByteBuffer.allocate(BUFSIZ);
-
+    private final ByteBuffer mWriteBuffer2 = ByteBuffer.allocate(BUFSIZ);
     private enum State {
         STOPPED,
         RUNNING,
@@ -61,12 +61,15 @@ public class SerialInputOutputManager implements Runnable {
 
     // Synchronized by 'this'
     private Listener mListener;
+    private Listener mListener2;
 
     public interface Listener {
         /**
          * Called when new incoming data is available.
          */
         public void onNewData(byte[] data);
+
+        public void onNewData2(byte[] data);
 
         /**
          * Called when {@link SerialInputOutputManager#run()} aborts due to an
@@ -96,6 +99,22 @@ public class SerialInputOutputManager implements Runnable {
 
     public synchronized Listener getListener() {
         return mListener;
+    }
+
+    public synchronized void setListener2(Listener listener) {
+        mListener2 = listener;
+    }
+
+    public synchronized Listener getListener2() {
+        return mListener2;
+    }
+
+    public synchronized void setDriver2(UsbSerialPort driver) {
+        mDriver2 = driver;
+    }
+
+    public synchronized UsbSerialPort getDriver2() {
+        return mDriver2;
     }
 
     public void writeAsync(byte[] data) {
@@ -155,17 +174,34 @@ public class SerialInputOutputManager implements Runnable {
 
     private void step() throws IOException {
         // Handle incoming data.
-        int len = mDriver.read(mReadBuffer.array(), READ_WAIT_MILLIS);
-        if (len > 0) {
-            if (DEBUG) Log.d(TAG, "Read data len=" + len);
-            final Listener listener = getListener();
-            if (listener != null) {
-                final byte[] data = new byte[len];
-                mReadBuffer.get(data, 0, len);
-                listener.onNewData(data);
-            }
-            mReadBuffer.clear();
+        if (mDriver != null){
+          int len = mDriver.read(mReadBuffer.array(), READ_WAIT_MILLIS);
+          if (len > 0) {
+              if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
+              final Listener listener = getListener();
+              if (listener != null) {
+                  final byte[] data = new byte[len];
+                  mReadBuffer.get(data, 0, len);
+                  listener.onNewData(data);
+              }
+              mReadBuffer.clear();
+          }
         }
+
+        if (mDriver2 != null){
+          int len2 = mDriver2.read(mReadBuffer2.array(), READ_WAIT_MILLIS);
+          if (len2 > 0) {
+              if (DEBUG) Log.d("BATRobot", "Read data 2 len=" + len);
+              final Listener listener = getListener();
+              if (listener != null) {
+                  final byte[] data = new byte[len];
+                  mReadBuffer2.get(data, 0, len);
+                  listener.onNewData2(data);
+              }
+              mReadBuffer2.clear();
+          }
+        }
+
 
         // Handle outgoing data.
         byte[] outBuff = null;
