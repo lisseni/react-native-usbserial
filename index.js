@@ -55,6 +55,7 @@ export class UsbSerial {
 
   monitor(handler){
     if(this.eventListener) {
+      console.log("BATRobot index.js monitor eventListener exists");
       this.eventListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
