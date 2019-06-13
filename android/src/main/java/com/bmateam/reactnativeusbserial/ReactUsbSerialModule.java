@@ -56,7 +56,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
   private WritableArray openedDeviceArray = Arguments.createArray();
-  private HashMap<String, String> monitoringDevicesDict = new HashMap<>();
+  private WritableMap monitoringDevicesDict = Arguments.createMap();
   //private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
   private final SerialInputOutputManager.Listener mListener =
   new SerialInputOutputManager.Listener() {
@@ -111,12 +111,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         Log.w("BATRobot java","startIoManager No device opened");
         throw new Exception(String.format("No device opened"));
       }
-      String state = monitoringDevicesDict.get(portName);
+      String state = monitoringDevicesDict.getString(portName);
       if (state != null){
         Log.w("BATRobot java","event is monitored for port " + portName);
         return;
       }
-
+      
       monitoringDevicesDict.putString(portName,"opened");
       UsbSerialPort sPort = usd.getPort();
       Log.w("BATRobot java","startIoManager sPort");
