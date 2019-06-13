@@ -177,7 +177,7 @@ public class SerialInputOutputManager implements Runnable {
         if (mDriver != null){
           int len = mDriver.read(mReadBuffer.array(), READ_WAIT_MILLIS);
           if (len > 0) {
-              if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
+  //            if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
               final Listener listener = getListener();
               if (listener != null) {
                   final byte[] data = new byte[len];
@@ -209,7 +209,7 @@ public class SerialInputOutputManager implements Runnable {
         if (mDriver2 != null){
           int len2 = mDriver2.read(mReadBuffer2.array(), READ_WAIT_MILLIS);
           if (len2 > 0) {
-              if (DEBUG) Log.d("BATRobot", "Read data 2 len=" + len2);
+//              if (DEBUG) Log.d("BATRobot", "Read data 2 len=" + len2);
               final Listener listener = getListener();
               if (listener != null) {
                   final byte[] data = new byte[len2];
@@ -237,9 +237,6 @@ public class SerialInputOutputManager implements Runnable {
               mDriver2.write(outBuff2, READ_WAIT_MILLIS);
           }
         }
-
-
-
     }
 
 }

@@ -18,16 +18,16 @@ export class UsbSerial {
   }
 
   getDeviceListAsync() {
-    console.log("BATRobot index.js getDeviceListAsync");
+    //console.log("BATRobot index.js getDeviceListAsync");
     return UsbSerialModule.getDeviceListAsync();
   }
 
   openDeviceAsync(deviceObject = {}) {
-    console.log("BATRobot index.js openDeviceAsync");
+    //console.log("BATRobot index.js openDeviceAsync");
     return UsbSerialModule.openDeviceAsync(deviceObject).then((usbSerialDevNativeObject) => {
       //return new Promise((resolve)=>{
         //const usd = new UsbSerialDevice(UsbSerialModule, usbSerialDevNativeObject);
-        console.log("BATRobot index.js resolve" + JSON.stringify(usbSerialDevNativeObject));
+        //console.log("BATRobot index.js resolve" + JSON.stringify(usbSerialDevNativeObject));
         return resolve(usbSerialDevNativeObject);
       })
       .catch((err)=>{
@@ -39,7 +39,7 @@ export class UsbSerial {
   }
 
   getUsbPermission(deviceObject = {}){
-    console.log("BATRobot index.js getUsbPermission");
+    //console.log("BATRobot index.js getUsbPermission");
     return UsbSerialModule.getUsbPermission(deviceObject).then((res)=>{
       return new Promise((resolve, reject)=>{
         return resolve(res);
@@ -53,20 +53,21 @@ export class UsbSerial {
     });
   }
 
-  monitor(handler){
+  monitor(handler, portName){
     if(this.eventListener) {
-      console.log("BATRobot index.js monitor eventListener exists");
+      //console.log("BATRobot index.js monitor eventListener exists");
       this.eventListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
-    console.log("BATRobot index.js monitor");
-    this.eventListener = DeviceEventEmitter.addListener('Data',function(e: Event) {
+    let eventName = 'Data'; //+portName;
+    //console.log("BATRobot index.js monitor " + eventName);
+    this.eventListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
       handler(e);
     });
   }
 
   write(deviceObject = {},cmd){
-    console.log("BATRobot index.js write" + JSON.stringify(deviceObject));
+    //console.log("BATRobot index.js write" + JSON.stringify(deviceObject));
     return UsbSerialModule.writeInDeviceAsync(deviceObject,cmd).then((res)=>{
       return new Promise((resolve)=>{
         return resolve(res);
