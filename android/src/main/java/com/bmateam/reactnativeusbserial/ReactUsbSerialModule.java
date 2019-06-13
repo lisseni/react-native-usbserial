@@ -116,8 +116,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         Log.w("BATRobot java","event is monitored for port " + portName);
         return;
       }
-      
-      monitoringDevicesDict.putString(portName,"opened")
+
+      monitoringDevicesDict.putString(portName,"opened");
       UsbSerialPort sPort = usd.getPort();
       Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
