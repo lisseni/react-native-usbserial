@@ -186,40 +186,60 @@ public class SerialInputOutputManager implements Runnable {
               }
               mReadBuffer.clear();
           }
+
+          // Handle outgoing data.
+          byte[] outBuff = null;
+          synchronized (mWriteBuffer) {
+              len = mWriteBuffer.position();
+              if (len > 0) {
+                  outBuff = new byte[len];
+                  mWriteBuffer.rewind();
+                  mWriteBuffer.get(outBuff, 0, len);
+                  mWriteBuffer.clear();
+              }
+          }
+          if (outBuff != null) {
+              if (DEBUG) {
+                  Log.d(TAG, "Writing data len=" + len);
+              }
+              mDriver.write(outBuff, READ_WAIT_MILLIS);
+          }
         }
 
         if (mDriver2 != null){
           int len2 = mDriver2.read(mReadBuffer2.array(), READ_WAIT_MILLIS);
           if (len2 > 0) {
-              if (DEBUG) Log.d("BATRobot", "Read data 2 len=" + len);
+              if (DEBUG) Log.d("BATRobot", "Read data 2 len=" + len2);
               final Listener listener = getListener();
               if (listener != null) {
-                  final byte[] data = new byte[len];
-                  mReadBuffer2.get(data, 0, len);
+                  final byte[] data = new byte[len2];
+                  mReadBuffer2.get(data, 0, len2);
                   listener.onNewData2(data);
               }
               mReadBuffer2.clear();
           }
+
+          // Handle outgoing data.
+          byte[] outBuff2 = null;
+          synchronized (mWriteBuffer2) {
+              len2 = mWriteBuffer2.position();
+              if (len2 > 0) {
+                  outBuff2 = new byte[len2];
+                  mWriteBuffer2.rewind();
+                  mWriteBuffer2.get(outBuff, 0, len2);
+                  mWriteBuffer2.clear();
+              }
+          }
+          if (outBuff2 != null) {
+              if (DEBUG) {
+                  Log.d(TAG, "Writing data len=" + len2);
+              }
+              mDriver2.write(outBuff2, READ_WAIT_MILLIS);
+          }
         }
 
 
-        // Handle outgoing data.
-        byte[] outBuff = null;
-        synchronized (mWriteBuffer) {
-            len = mWriteBuffer.position();
-            if (len > 0) {
-                outBuff = new byte[len];
-                mWriteBuffer.rewind();
-                mWriteBuffer.get(outBuff, 0, len);
-                mWriteBuffer.clear();
-            }
-        }
-        if (outBuff != null) {
-            if (DEBUG) {
-                Log.d(TAG, "Writing data len=" + len);
-            }
-            mDriver.write(outBuff, READ_WAIT_MILLIS);
-        }
+
     }
 
 }
