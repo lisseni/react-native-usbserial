@@ -44,7 +44,7 @@ public class SerialInputOutputManager implements Runnable {
     private static final int BUFSIZ = 4096;
 
     private final UsbSerialPort mDriver;
-    private final UsbSerialPort mDriver2;
+    private UsbSerialPort mDriver2;
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
     private final ByteBuffer mReadBuffer2 = ByteBuffer.allocate(BUFSIZ);
     // Synchronized by 'mWriteBuffer'
@@ -226,7 +226,7 @@ public class SerialInputOutputManager implements Runnable {
               if (len2 > 0) {
                   outBuff2 = new byte[len2];
                   mWriteBuffer2.rewind();
-                  mWriteBuffer2.get(outBuff, 0, len2);
+                  mWriteBuffer2.get(outBuff2, 0, len2);
                   mWriteBuffer2.clear();
               }
           }
