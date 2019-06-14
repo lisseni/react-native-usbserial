@@ -90,8 +90,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void stopIoManager(String portName) {
     if (mSerialIoManager != null) {
       Log.i("BATRobot java", "Stopping io manager ..");
-      //mSerialIoManager.stop();
-      //mSerialIoManager = null;
+      if (portName.equals(mSerialIoManager.getDriver())){
+        mSerialIoManager.setDriver(null);
+        monitoringDevicesDict.remove(portName);
+      }else if (portName.equals(mSerialIoManager.getDriver2())){
+        mSerialIoManager.setDriver2(null);
+        monitoringDevicesDict.remove(portName);
+      }
     }
   }
 
@@ -130,10 +135,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
         if (mSerialIoManager == null){
-          mSerialIoManager = new SerialInputOutputManager(sPort, mListener);
-        }else{
+          mSerialIoManager = new SerialInputOutputManager(mListener);
+          if (mSerialIoManager.getDriver().isEmpty()){
+            mSerialIoManager.setDriver(portName);
+          }else if if (mSerialIoManager.getDriver2().isEmpty()){
+            mSerialIoManager.setDriver2(portName);
+          }
+
           mSerialIoManager.setDriver2(sPort);
-        }
+
         mExecutor.submit(mSerialIoManager);
       }else{
         //        Log.i("BATRobot java", "Start io manager error sPort == null");
@@ -389,7 +399,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           //sPort.purgeHwBuffers(true, true);
           offset = sPort.write(data, 400);
           Log.w("BATRobot java writeInDeviceAsync","offset "+offset + portName);
-          p.resolve(offset);
+          p.resolve(0);
         }
       }else{
         Log.w("BATRobot Port is closed",portName);

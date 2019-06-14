@@ -43,8 +43,8 @@ public class SerialInputOutputManager implements Runnable {
     private static final int READ_WAIT_MILLIS = 200;
     private static final int BUFSIZ = 4096;
 
-    private UsbSerialPort mDriver;
-    private UsbSerialPort mDriver2;
+    private UsbSerialPort mDriver = null;
+    private UsbSerialPort mDriver2 = null;
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
     private final ByteBuffer mReadBuffer2 = ByteBuffer.allocate(BUFSIZ);
     // Synchronized by 'mWriteBuffer'
@@ -79,17 +79,9 @@ public class SerialInputOutputManager implements Runnable {
     }
 
     /**
-     * Creates a new instance with no listener.
-     */
-    public SerialInputOutputManager(UsbSerialPort driver) {
-        this(driver, null);
-    }
-
-    /**
      * Creates a new instance with the provided listener.
      */
-    public SerialInputOutputManager(UsbSerialPort driver, Listener listener) {
-        mDriver = driver;
+    public SerialInputOutputManager(Listener listener) {
         mListener = listener;
     }
 
