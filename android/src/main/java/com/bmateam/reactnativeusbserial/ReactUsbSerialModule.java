@@ -383,11 +383,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           p.reject("Port is closed");
         }else{
           //sPort.purgeHwBuffers(true, true);
-          offset = sPort.write(data, 200);
+          offset = sPort.write(data, 400);
           Log.w("BATRobot java writeInDeviceAsync","offset "+offset);
           p.resolve(offset);
         }
       }else{
+        Log.w("BATRobot Port is closed",portName);
         p.reject("Port is closed");
       }
     } catch (Exception e) {
@@ -421,7 +422,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     {
       throw new IOException("no ports");
     }
-    //    Log.i("BATRobot", "BATRobot ports num: "+ driver.getPorts().size());
+    Log.i("BATRobot", "BATRobot ports num: "+ driver.getPorts().size() + " "+portName);
 
     UsbSerialPort port = driver.getPorts().get(test_device_port);
 
