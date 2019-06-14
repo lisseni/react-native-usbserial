@@ -343,6 +343,25 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void flush(ReadableMap deviceObject, Boolean flushReadBuffers, Boolean flushWriteBuffers) {
+    try {
+      String portName = deviceObject.getString("comName");
+        if (usbSerialDriverDict.isEmpty()){
+          return;
+        }
+        UsbSerialDevice usd = usbSerialDriverDict.get(portName);
+        if (usd != null){
+          UsbSerialPort sPort = usd.getPort();
+          if (sPort != null)
+            sPort.purgeHwBuffers(flushReadBuffers, flushWriteBuffers);
+        }
+    }catch (Exception e) {
+      Log.w("BATRobot java flush","Exception");
+      return;
+    }
+  }
+
+  @ReactMethod
   public void writeInDeviceAsync(ReadableMap deviceObject, ReadableArray cmd, Promise p) {
     //    Log.w("BATRobot java writeInDeviceAsync","start");
     int offset = 0;
@@ -363,7 +382,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         if (sPort == null){
           p.reject("Port is closed");
         }else{
-          sPort.purgeHwBuffers(true, true);
+          //sPort.purgeHwBuffers(true, true);
           offset = sPort.write(data, 200);
           p.resolve(offset);
         }
