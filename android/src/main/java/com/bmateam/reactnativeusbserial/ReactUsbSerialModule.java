@@ -138,7 +138,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           mSerialIoManager = new SerialInputOutputManager(mListener);
           if (mSerialIoManager.getDriver().isEmpty()){
             mSerialIoManager.setDriver(portName);
-          }else if if (mSerialIoManager.getDriver2().isEmpty()){
+          }else if (mSerialIoManager.getDriver2().isEmpty()){
             mSerialIoManager.setDriver2(portName);
           }
 
