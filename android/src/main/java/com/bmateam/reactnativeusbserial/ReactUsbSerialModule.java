@@ -57,7 +57,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
   private WritableArray openedDeviceArray = Arguments.createArray();
-  private HashMap<int, String> monitoringDevicesDict = new HashMap<>();
+  private HashMap<String, String> monitoringDevicesDict = new HashMap<>();
   //private WritableMap monitoringDevicesDict = Arguments.createMap();
   //private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
   private final SerialInputOutputManager.Listener mListener =
@@ -90,12 +90,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void stopIoManager(String portName) {
     if (mSerialIoManager != null) {
       Log.i("BATRobot java", "Stopping io manager ..");
-      if (portName.equals(monitoringDevicesDict.get(1))){
+      if (portName.equals(monitoringDevicesDict.get("1"))){
         mSerialIoManager.setDriver(null);
-        monitoringDevicesDict.remove(1);
-      }else if (portName.equals(monitoringDevicesDict.get(2))){
+        monitoringDevicesDict.remove("1");
+      }else if (portName.equals(monitoringDevicesDict.get("2"))){
         mSerialIoManager.setDriver2(null);
-        monitoringDevicesDict.remove(2);
+        monitoringDevicesDict.remove("2");
       }
     }
   }
@@ -124,10 +124,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
       if (!monitoringDevicesDict.isEmpty()){
         String state = monitoringDevicesDict.get(portName);
-        if (portName.equals(monitoringDevicesDict.get(1))){
+        if (portName.equals(monitoringDevicesDict.get("1"))){
           Log.w("BATRobot java","event is monitored for port " + portName);
           return;
-        }else if (portName.equals(monitoringDevicesDict.get(2))){
+        }else if (portName.equals(monitoringDevicesDict.get("2"))){
           Log.w("BATRobot java","event is monitored for port " + portName);
           return;
         }
@@ -139,12 +139,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           if (mSerialIoManager == null){
             mSerialIoManager = new SerialInputOutputManager(mListener);
 
-            if (monitoringDevicesDict.get(1) != null){
-              mSerialIoManager.setDriver(portName);
-              monitoringDevicesDict.put(1,portName);
-            }else if (monitoringDevicesDict.get(2) != null){
-              mSerialIoManager.setDriver2(portName);
-              monitoringDevicesDict.put(2,portName);
+            if (monitoringDevicesDict.get("1") != null){
+              mSerialIoManager.setDriver(sPort);
+              monitoringDevicesDict.put("1",portName);
+            }else if (monitoringDevicesDict.get("2") != null){
+              mSerialIoManager.setDriver2(sPort);
+              monitoringDevicesDict.put("2",portName);
             }
 
           mExecutor.submit(mSerialIoManager);
