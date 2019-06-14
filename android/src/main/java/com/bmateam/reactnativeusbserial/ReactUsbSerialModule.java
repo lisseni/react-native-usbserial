@@ -363,7 +363,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void writeInDeviceAsync(ReadableMap deviceObject, ReadableArray cmd, Promise p) {
-    //    Log.w("BATRobot java writeInDeviceAsync","start");
+    Log.w("BATRobot java writeInDeviceAsync","start");
     int offset = 0;
     String portName = deviceObject.getString("comName");
     try {
@@ -384,6 +384,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         }else{
           //sPort.purgeHwBuffers(true, true);
           offset = sPort.write(data, 200);
+          Log.w("BATRobot java writeInDeviceAsync","offset "+offset);
           p.resolve(offset);
         }
       }else{
