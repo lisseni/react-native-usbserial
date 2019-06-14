@@ -124,10 +124,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
       if (!monitoringDevicesDict.isEmpty()){
         String state = monitoringDevicesDict.get(portName);
-        if (portName.equals(monitoringDevicesDict.get(1){
+        if (portName.equals(monitoringDevicesDict.get(1))){
           Log.w("BATRobot java","event is monitored for port " + portName);
           return;
-        }else if (portName.equals(monitoringDevicesDict.get(2){
+        }else if (portName.equals(monitoringDevicesDict.get(2))){
           Log.w("BATRobot java","event is monitored for port " + portName);
           return;
         }
@@ -139,10 +139,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           if (mSerialIoManager == null){
             mSerialIoManager = new SerialInputOutputManager(mListener);
 
-            if (monitoringDevicesDict.get(1) != null{
+            if (monitoringDevicesDict.get(1) != null){
               mSerialIoManager.setDriver(portName);
               monitoringDevicesDict.put(1,portName);
-            }else if (monitoringDevicesDict.get(1)){
+            }else if (monitoringDevicesDict.get(2) != null){
               mSerialIoManager.setDriver2(portName);
               monitoringDevicesDict.put(2,portName);
             }
