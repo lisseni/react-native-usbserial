@@ -191,7 +191,7 @@ public class SerialInputOutputManager implements Runnable {
                   listener.onNewData(data);
               }
               mReadBuffer.clear();
-              mDriver.purgeHwBuffers(true, false);
+              //mDriver.purgeHwBuffers(true, false);
           }
 
           // Handle outgoing data.
@@ -222,7 +222,7 @@ public class SerialInputOutputManager implements Runnable {
                   final byte[] data = new byte[len2];
                   mReadBuffer2.get(data, 0, len2);
                   listener.onNewData2(data);
-                  mDriver2.purgeHwBuffers(true, false);
+                  //mDriver2.purgeHwBuffers(true, false);
               }
               mReadBuffer2.clear();
           }
