@@ -57,7 +57,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
   private WritableArray openedDeviceArray = Arguments.createArray();
-  private HashMap<String, String> monitoringDevicesDict = new HashMap<>();
+  private HashMap<int, String> monitoringDevicesDict = new HashMap<>();
   //private WritableMap monitoringDevicesDict = Arguments.createMap();
   //private final HashMap<String, SerialInputOutputManager.Listener> mListenerDict = new HashMap<>();
   private final SerialInputOutputManager.Listener mListener =
@@ -90,12 +90,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private void stopIoManager(String portName) {
     if (mSerialIoManager != null) {
       Log.i("BATRobot java", "Stopping io manager ..");
-      if (portName.equals(mSerialIoManager.getDriver())){
+      if (portName.equals(monitoringDevicesDict.get(1))){
         mSerialIoManager.setDriver(null);
-        monitoringDevicesDict.remove(portName);
-      }else if (portName.equals(mSerialIoManager.getDriver2())){
+        monitoringDevicesDict.remove(1);
+      }else if (portName.equals(monitoringDevicesDict.get(2))){
         mSerialIoManager.setDriver2(null);
-        monitoringDevicesDict.remove(portName);
+        monitoringDevicesDict.remove(2);
       }
     }
   }
@@ -124,22 +124,27 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
       if (!monitoringDevicesDict.isEmpty()){
         String state = monitoringDevicesDict.get(portName);
-        if (state != null){
+        if (portName.equals(monitoringDevicesDict.get(1){
+          Log.w("BATRobot java","event is monitored for port " + portName);
+          return;
+        }else if (portName.equals(monitoringDevicesDict.get(2){
           Log.w("BATRobot java","event is monitored for port " + portName);
           return;
         }
       }
-
-      monitoringDevicesDict.put(portName,"opened");
+      //monitoringDevicesDict.put(portName,"one");
       UsbSerialPort sPort = usd.getPort();
       Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
           if (mSerialIoManager == null){
             mSerialIoManager = new SerialInputOutputManager(mListener);
-            if (mSerialIoManager.getDriver().isEmpty()){
+
+            if (monitoringDevicesDict.get(1) != null{
               mSerialIoManager.setDriver(portName);
-            }else if (mSerialIoManager.getDriver2().isEmpty()){
+              monitoringDevicesDict.put(1,portName);
+            }else if (monitoringDevicesDict.get(1)){
               mSerialIoManager.setDriver2(portName);
+              monitoringDevicesDict.put(2,portName);
             }
 
           mExecutor.submit(mSerialIoManager);
