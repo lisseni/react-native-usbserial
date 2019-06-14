@@ -134,21 +134,19 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       UsbSerialPort sPort = usd.getPort();
       Log.w("BATRobot java","startIoManager sPort");
       if (sPort != null) {
-        if (mSerialIoManager == null){
-          mSerialIoManager = new SerialInputOutputManager(mListener);
-          if (mSerialIoManager.getDriver().isEmpty()){
-            mSerialIoManager.setDriver(portName);
-          }else if (mSerialIoManager.getDriver2().isEmpty()){
-            mSerialIoManager.setDriver2(portName);
-          }
+          if (mSerialIoManager == null){
+            mSerialIoManager = new SerialInputOutputManager(mListener);
+            if (mSerialIoManager.getDriver().isEmpty()){
+              mSerialIoManager.setDriver(portName);
+            }else if (mSerialIoManager.getDriver2().isEmpty()){
+              mSerialIoManager.setDriver2(portName);
+            }
 
-          mSerialIoManager.setDriver2(sPort);
-
-        mExecutor.submit(mSerialIoManager);
-      }else{
-        //        Log.i("BATRobot java", "Start io manager error sPort == null");
+          mExecutor.submit(mSerialIoManager);
+        }else{
+          //        Log.i("BATRobot java", "Start io manager error sPort == null");
+        }
       }
-
     }catch (Exception e) {
       Log.w("BATRobot java","Starting io manager Exception");
       e.printStackTrace();
