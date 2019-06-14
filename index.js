@@ -75,6 +75,7 @@ export class UsbSerial {
     let eventName = 'Disconnect'; //+portName;
     //consoleeventDiscListener.log("BATRobot index.js monitor " + eventName);
     this.eventDiscListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
+      console.log("BATRobot index.js DISCONNECT");
       handler(e);
     });
   }

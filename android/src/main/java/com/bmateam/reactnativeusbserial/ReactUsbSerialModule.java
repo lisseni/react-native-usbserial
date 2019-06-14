@@ -65,7 +65,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onRunError(Exception e) {
       Log.v("BATRobot java", "Runner stopped.");
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, null);
+      String param = "disconnect";
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
     }
     @Override
     public void onNewData(final byte[] data) {
