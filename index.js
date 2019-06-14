@@ -53,7 +53,7 @@ export class UsbSerial {
     });
   }
 
-  monitor(handler, portName){
+  monitor(handler){
     if(this.eventListener) {
       //console.log("BATRobot index.js monitor eventListener exists");
       this.eventListener = undefined;
@@ -62,6 +62,19 @@ export class UsbSerial {
     let eventName = 'Data'; //+portName;
     //console.log("BATRobot index.js monitor " + eventName);
     this.eventListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
+      handler(e);
+    });
+  }
+
+  disconnectMonitor(handler){
+    if(this.eventDiscListener) {
+      //console.log("BATRobot index.js monitor eventListener exists");
+      this.eventDiscListener = undefined;
+      //DeviceEventEmitter.removeListener('Data', handler)
+    }
+    let eventName = 'Disconnect'; //+portName;
+    //consoleeventDiscListener.log("BATRobot index.js monitor " + eventName);
+    this.eventDiscListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
       handler(e);
     });
   }
@@ -83,6 +96,10 @@ export class UsbSerial {
   close(deviceObject = {}){
     if(this.eventListener) {
       this.eventListener = undefined;
+      //DeviceEventEmitter.removeListener('Data', handler)
+    }
+    if(this.eventDiscListener) {
+      this.eventDiscListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
     return UsbSerialModule.closeDevice(deviceObject).then(()=>{

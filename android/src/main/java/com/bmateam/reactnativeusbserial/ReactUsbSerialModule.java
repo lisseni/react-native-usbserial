@@ -50,6 +50,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private final HashMap<String, UsbSerialDevice> usbSerialDriverDict = new HashMap<>();
   private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
   private static final String UsbEventName="Data";
+  private static final String UsbDisconnectName="Disconnect";
   private ReactApplicationContext reactContext;
   private SerialInputOutputManager mSerialIoManager;
   //private final HashMap<String, SerialInputOutputManager> mSerialIoManagerDict;
@@ -64,6 +65,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onRunError(Exception e) {
       Log.v("BATRobot java", "Runner stopped.");
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, null);
     }
     @Override
     public void onNewData(final byte[] data) {
