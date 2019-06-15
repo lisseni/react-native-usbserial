@@ -97,6 +97,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
         mSerialIoManager.setDriver2(null);
         monitoringDevicesDict.remove("2");
       }
+      if (usbSerialDriverDict.isEmpty()){
+        mSerialIoManager.stop();
+        mSerialIoManager.remove();
+      }
     }
   }
 
@@ -139,10 +143,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           if (mSerialIoManager == null){
             mSerialIoManager = new SerialInputOutputManager(mListener);
 
-            if (monitoringDevicesDict.get("1") != null){
+            if (monitoringDevicesDict.get("1") == null){
               mSerialIoManager.setDriver(sPort);
               monitoringDevicesDict.put("1",portName);
-            }else if (monitoringDevicesDict.get("2") != null){
+            }else if (monitoringDevicesDict.get("2") == null){
               mSerialIoManager.setDriver2(sPort);
               monitoringDevicesDict.put("2",portName);
             }
@@ -304,9 +308,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       }
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       if (usd != null){
+        usbSerialDriverDict.remove(portName);
         stopIoManager(portName);
         usd.getPort().close();
-        usbSerialDriverDict.remove(portName);
+
         p.resolve("Port closed");
       }else{
         p.reject("Port wasn't opened");
