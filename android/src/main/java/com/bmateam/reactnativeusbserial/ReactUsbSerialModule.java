@@ -99,7 +99,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       }
       if (usbSerialDriverDict.isEmpty()){
         mSerialIoManager.stop();
-        mSerialIoManager.remove();
+        mSerialIoManager = null;
       }
     }
   }
