@@ -89,17 +89,20 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private void stopIoManager(String portName) {
     if (mSerialIoManager != null) {
-      Log.i("BATRobot java", "Stopping io manager ..");
+      Log.i("BATRobot java", "Stopping io manager .." + portName);
       if (portName.equals(monitoringDevicesDict.get("1"))){
         mSerialIoManager.setDriver(null);
         monitoringDevicesDict.remove("1");
+        Log.i("BATRobot java", "Stopping io manager .." + portName);
       }else if (portName.equals(monitoringDevicesDict.get("2"))){
         mSerialIoManager.setDriver2(null);
         monitoringDevicesDict.remove("2");
+        Log.i("BATRobot java", "Stopping io manager .." + portName);
       }
       if (usbSerialDriverDict.isEmpty()){
         mSerialIoManager.stop();
         mSerialIoManager = null;
+        Log.i("BATRobot java", "Stopping io manager mSerialIoManager" + portName);
       }
     }
   }
@@ -138,23 +141,25 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       }
       //monitoringDevicesDict.put(portName,"one");
       UsbSerialPort sPort = usd.getPort();
-      Log.w("BATRobot java","startIoManager sPort");
+      Log.w("BATRobot java","startIoManager sPort" + portName);
       if (sPort != null) {
           if (mSerialIoManager == null){
             mSerialIoManager = new SerialInputOutputManager(mListener);
-
+          }
             if (monitoringDevicesDict.get("1") == null){
               mSerialIoManager.setDriver(sPort);
               monitoringDevicesDict.put("1",portName);
+              Log.w("BATRobot java","startIoManager port1" + portName);
             }else if (monitoringDevicesDict.get("2") == null){
               mSerialIoManager.setDriver2(sPort);
               monitoringDevicesDict.put("2",portName);
+              Log.w("BATRobot java","startIoManager port2" + portName);
             }
 
           mExecutor.submit(mSerialIoManager);
-        }else{
-          //        Log.i("BATRobot java", "Start io manager error sPort == null");
-        }
+
+      }else{
+        //        Log.i("BATRobot java", "Start io manager error sPort == null");
       }
     }catch (Exception e) {
       Log.w("BATRobot java","Starting io manager Exception");
