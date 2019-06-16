@@ -62,7 +62,7 @@ export class UsbSerial {
       //DeviceEventEmitter.removeListener('Data', handler)
     }
     let eventName = 'Data ' + deviceObject.comName;
-    console.log("BATRobot index.js monitor " + eventName);
+    //console.log("BATRobot index.js monitor " + eventName);
     this.eventListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
       //emitter.emit('java_event_test', eventName)
       handler(e);

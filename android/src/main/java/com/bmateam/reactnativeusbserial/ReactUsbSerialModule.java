@@ -431,7 +431,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       dataArray.pushInt((data[i])&0xFF);
 
     }
-    Log.i("BATRobot java", "sendEvent! " + eventName);
+    //Log.i("BATRobot java", "sendEvent! " + eventName);
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
   }
 
