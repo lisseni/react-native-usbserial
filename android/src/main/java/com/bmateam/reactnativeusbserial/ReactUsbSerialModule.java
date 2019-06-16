@@ -426,12 +426,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
   private void sendEvent(byte[] data, String portName) {
     WritableArray dataArray = Arguments.createArray();
-    String eventName = UsbEventName + "_" + portName;
+    String eventName = UsbEventName + " " + portName;
     for (int i =0; i< data.length; i++) {
       dataArray.pushInt((data[i])&0xFF);
 
     }
-    //     Log.i("BATRobot java", "sendEvent!");
+    Log.i("BATRobot java", "sendEvent! " + eventName);
     reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
   }
 
