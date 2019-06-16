@@ -71,13 +71,13 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onNewData(final byte[] data) {
       //Log.v("BATRobot java", "onNewData");
-      sendEvent(data);
+      sendEvent(data, monitoringDevicesDict.get("1"));
     }
 
     @Override
     public void onNewData2(final byte[] data) {
       //Log.v("BATRobot java", "onNewData 2");
-      sendEvent(data);
+      sendEvent(data,monitoringDevicesDict.get("2"));
     }
   };
 
@@ -424,15 +424,15 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     }
   }
 
-  private void sendEvent(byte[] data) {
+  private void sendEvent(byte[] data, String portName) {
     WritableArray dataArray = Arguments.createArray();
-    //String eventName = UsbEventName + "_" + portName;
+    String eventName = UsbEventName + "_" + portName;
     for (int i =0; i< data.length; i++) {
       dataArray.pushInt((data[i])&0xFF);
 
     }
     //     Log.i("BATRobot java", "sendEvent!");
-    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbEventName, dataArray);
+    reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
   }
 
 

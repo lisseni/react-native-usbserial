@@ -6,6 +6,7 @@ import {
   DeviceEventEmitter
 } from 'react-native';
 //import UsbSerialDevice from './UsbSerialDevice';
+const EventEmitter = require('events')
 
 const UsbSerialModule = NativeModules.UsbSerial;
 
@@ -15,6 +16,7 @@ export class UsbSerial {
     if (Platform.OS != 'android') {
       throw 'Unfortunately only android is supported';
     }
+    let emitter = new EventEmitter;
   }
 
   getDeviceListAsync() {
@@ -53,15 +55,16 @@ export class UsbSerial {
     });
   }
 
-  monitor(handler){
+  monitor(deviceObject = {},handler){
     if(this.eventListener) {
       //console.log("BATRobot index.js monitor eventListener exists");
       this.eventListener = undefined;
       //DeviceEventEmitter.removeListener('Data', handler)
     }
-    let eventName = 'Data'; //+portName;
+    let eventName = 'Data ' + deviceObject.comName;
     //console.log("BATRobot index.js monitor " + eventName);
     this.eventListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
+      emitter.emit('java_event_test', eventName)
       handler(e);
     });
   }
