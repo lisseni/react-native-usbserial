@@ -40,13 +40,16 @@ public class SerialInputOutputManager implements Runnable {
     private static final String TAG = SerialInputOutputManager.class.getSimpleName();
     private static final boolean DEBUG = true;
 
-    private static final int READ_WAIT_MILLIS = 100;
+    private static final int READ_WAIT_MILLIS = 200;
     private static final int BUFSIZ = 4096;
 
-    private UsbSerialPort mDriver = null;
+    private final UsbSerialPort mDriver;
+
     private final ByteBuffer mReadBuffer = ByteBuffer.allocate(BUFSIZ);
+
     // Synchronized by 'mWriteBuffer'
     private final ByteBuffer mWriteBuffer = ByteBuffer.allocate(BUFSIZ);
+
     private enum State {
         STOPPED,
         RUNNING,
@@ -73,9 +76,17 @@ public class SerialInputOutputManager implements Runnable {
     }
 
     /**
+     * Creates a new instance with no listener.
+     */
+    public SerialInputOutputManager(UsbSerialPort driver) {
+        this(driver, null);
+    }
+
+    /**
      * Creates a new instance with the provided listener.
      */
-    public SerialInputOutputManager(Listener listener) {
+    public SerialInputOutputManager(UsbSerialPort driver, Listener listener) {
+        mDriver = driver;
         mListener = listener;
     }
 
@@ -87,13 +98,6 @@ public class SerialInputOutputManager implements Runnable {
         return mListener;
     }
 
-    public synchronized void setDriver(UsbSerialPort driver) {
-            mDriver = driver;
-        }
-
-    public synchronized UsbSerialPort getDriver() {
-            return mDriver;
-          }
     public void writeAsync(byte[] data) {
         synchronized (mWriteBuffer) {
             mWriteBuffer.put(data);
@@ -151,37 +155,34 @@ public class SerialInputOutputManager implements Runnable {
 
     private void step() throws IOException {
         // Handle incoming data.
-  //       if (mDriver != null){
-  //         int len = mDriver.read(mReadBuffer.array(), 200);
-  //         if (len > 0) {
-  // //            if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
-  //             final Listener listener = getListener();
-  //             if (listener != null) {
-  //                 final byte[] data = new byte[len];
-  //                 mReadBuffer.get(data, 0, len);
-  //                 listener.onNewData(data);
-  //             }
-  //             mReadBuffer.clear();
-  //             //mDriver.purgeHwBuffers(true, false);
-  //         }
+        int len = mDriver.read(mReadBuffer.array(), READ_WAIT_MILLIS);
+        if (len > 0) {
+            if (DEBUG) Log.d(TAG, "Read data len=" + len);
+            final Listener listener = getListener();
+            if (listener != null) {
+                final byte[] data = new byte[len];
+                mReadBuffer.get(data, 0, len);
+                listener.onNewData(data);
+            }
+            mReadBuffer.clear();
+        }
 
-          // Handle outgoing data.
-          byte[] outBuff = null;
-          synchronized (mWriteBuffer) {
-              len = mWriteBuffer.position();
-              if (len > 0) {
-                  outBuff = new byte[len];
-                  mWriteBuffer.rewind();
-                  mWriteBuffer.get(outBuff, 0, len);
-                  mWriteBuffer.clear();
-              }
-          }
-          if (outBuff != null) {
-              if (DEBUG) {
-                  Log.d(TAG, "Writing data len=" + len);
-              }
-              mDriver.write(outBuff, READ_WAIT_MILLIS);
-          }
+        // Handle outgoing data.
+        byte[] outBuff = null;
+        synchronized (mWriteBuffer) {
+            len = mWriteBuffer.position();
+            if (len > 0) {
+                outBuff = new byte[len];
+                mWriteBuffer.rewind();
+                mWriteBuffer.get(outBuff, 0, len);
+                mWriteBuffer.clear();
+            }
+        }
+        if (outBuff != null) {
+            if (DEBUG) {
+                Log.d(TAG, "Writing data len=" + len);
+            }
+            mDriver.write(outBuff, READ_WAIT_MILLIS);
         }
     }
 
