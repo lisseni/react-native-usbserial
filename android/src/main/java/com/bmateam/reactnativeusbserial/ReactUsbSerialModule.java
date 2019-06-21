@@ -44,6 +44,7 @@ import java.io.DataOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import static android.content.ContentValues.TAG;
+import java.nio.ByteBuffer;
 
 public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
@@ -313,7 +314,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       Log.w("BATRobot java","port opened");
       usd.stopIoManager();
       usd.startIoManager();
-      p.resolve();
+      p.resolve(usd);
     } catch (Exception e) {
       p.reject(e);
     }
@@ -430,10 +431,10 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
             mReadBuffer.get(data, 0, len);
             Log.w("BATRobot java readDeviceAsync","return resolve");
-            p.resolve(data, len);
+            p.resolve(data);
             //mReadBuffer.clear();
         }else{
-          p.resolve(null, len);
+          p.resolve(null);
         }
           //sPort.purgeHwBuffers(true, true);
                   //Log.w("BATRobot java writeInDeviceAsync","offset "+offset + portName);

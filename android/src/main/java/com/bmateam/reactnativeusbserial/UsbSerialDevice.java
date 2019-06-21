@@ -8,9 +8,14 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.UnsupportedEncodingException;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.WritableArray;
 
 public class UsbSerialDevice {
     public UsbSerialPort port;
+    public String portName;
     private static final int SERIAL_TIMEOUT = 1000;
     private SerialInputOutputManager mSerialIoManager;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
@@ -19,17 +24,20 @@ public class UsbSerialDevice {
       @Override
       public void onRunError(Exception e) {
         Log.v("BATRobot java", "Runner stopped.");
-        String param = "disconnect_"+this.portName;
-        stopIoManager();
-        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
+        disconnect();
       }
       @Override
       public void onNewData(final byte[] data) {
         //Log.v("BATRobot java", "onNewData");
-        sendEvent(data, this.port.get("comName"));
+        sendEvent(data);
       }
     };
 
+    private void disconnect() {
+      String UsbDisconnectName = "disconnect_"+this.portName;
+      stopIoManager();
+      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, this.portName);
+    }
 
 
     public UsbSerialDevice(UsbSerialPort port,String portName) {
@@ -106,7 +114,7 @@ public class UsbSerialDevice {
         return new Exception("No port present for the UsbSerialDevice instance");
     }
 
-    private void sendEvent(byte[] data, String portName) {
+    private void sendEvent(byte[] data) {
       WritableArray dataArray = Arguments.createArray();
       String eventName = "Data" + " " + this.portName;
       for (int i =0; i< data.length; i++) {
