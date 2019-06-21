@@ -99,17 +99,18 @@ export class UsbSerial {
 
   read(deviceObject = {}){
     console.log("BATRobot index.js read" + JSON.stringify(deviceObject));
-    return UsbSerialModule.readDeviceAsync(deviceObject).then((data, len)=>{
-    console.log("BATRobot index.js read" + data.toString('hex') + "len "+len);
-      return new Promise((resolve)=>{
-        return resolve(data, len);
-      })
-    })
-    .catch((err)=>{
-      return new Promise((reject)=>{
-        return reject(err);
-      })
-    });
+    return resolve(0, 0);
+    // return UsbSerialModule.readDeviceAsync(deviceObject).then((data, len)=>{
+    // console.log("BATRobot index.js read" + data.toString('hex') + "len "+len);
+    //   return new Promise((resolve)=>{
+    //     return resolve(data, len);
+    //   })
+    // })
+    // .catch((err)=>{
+    //   return new Promise((reject)=>{
+    //     return reject(err);
+    //   })
+    // });
   }
 
   close(deviceObject = {}){
