@@ -1,6 +1,5 @@
 package com.bmateam.reactnativeusbserial;
 
-import com.facebook.react.bridge.Promise;
 import com.hoho.android.usbserial.driver.UsbSerialPort;
 import android.util.Log;
 import java.io.IOException;
@@ -8,14 +7,22 @@ import com.hoho.android.usbserial.util.SerialInputOutputManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.io.UnsupportedEncodingException;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableMap;
+
 
 public class UsbSerialDevice {
     public UsbSerialPort port;
     public String portName;
+    private ReactApplicationContext reactContext;
     private static final int SERIAL_TIMEOUT = 1000;
     private SerialInputOutputManager mSerialIoManager;
     private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
