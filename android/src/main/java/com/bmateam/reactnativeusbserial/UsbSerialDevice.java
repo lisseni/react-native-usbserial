@@ -31,7 +31,7 @@ public class UsbSerialDevice {
       @Override
       public void onRunError(Exception e) {
         Log.v("BATRobot java", "Runner stopped.");
-        disconnect();
+        //disconnect();
       }
       @Override
       public void onNewData(final byte[] data) {

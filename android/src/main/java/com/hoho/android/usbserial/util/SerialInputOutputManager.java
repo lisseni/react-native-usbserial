@@ -140,7 +140,7 @@ public class SerialInputOutputManager implements Runnable {
                 step();
             }
         } catch (Exception e) {
-            Log.w(TAG, "Run ending due to exception: " + e.getMessage(), e);
+            Log.w("BATRobot java", "Run ending due to exception: " + e.getMessage(), e);
             final Listener listener = getListener();
             if (listener != null) {
               listener.onRunError(e);
