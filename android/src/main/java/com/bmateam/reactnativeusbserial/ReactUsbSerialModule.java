@@ -408,7 +408,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
     int offset = 0;
     String portName = deviceObject.getString("comName");
-    //Log.w("BATRobot java writeInDeviceAsync","start "+portName);
+    Log.w("BATRobot java readDeviceAsync","start "+portName);
     try {
       if (usbSerialDriverDict.isEmpty()){
         p.reject("Port is closed");
@@ -422,16 +422,22 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
           p.reject("Port is closed");
         }else{
           ByteBuffer mReadBuffer = ByteBuffer.allocate(4096);
+          Log.w("BATRobot java readDeviceAsync","before read");
           int len = sPort.read(mReadBuffer.array(), 100);
+          Log.w("BATRobot java readDeviceAsync","after read len = "+len);
           if (len>0){
             final byte[] data = new byte[len];
 
             mReadBuffer.get(data, 0, len);
+            Log.w("BATRobot java readDeviceAsync","return resolve");
+            p.resolve(data, len);
             //mReadBuffer.clear();
+        }else{
+          p.resolve(null, len);
         }
           //sPort.purgeHwBuffers(true, true);
                   //Log.w("BATRobot java writeInDeviceAsync","offset "+offset + portName);
-          p.resolve(data, len);
+
         }
       }else{
         Log.w("BATRobot Port is closed",portName);
