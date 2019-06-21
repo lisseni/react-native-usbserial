@@ -151,19 +151,19 @@ public class SerialInputOutputManager implements Runnable {
 
     private void step() throws IOException {
         // Handle incoming data.
-        if (mDriver != null){
-          int len = mDriver.read(mReadBuffer.array(), 200);
-          if (len > 0) {
-  //            if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
-              final Listener listener = getListener();
-              if (listener != null) {
-                  final byte[] data = new byte[len];
-                  mReadBuffer.get(data, 0, len);
-                  listener.onNewData(data);
-              }
-              mReadBuffer.clear();
-              //mDriver.purgeHwBuffers(true, false);
-          }
+  //       if (mDriver != null){
+  //         int len = mDriver.read(mReadBuffer.array(), 200);
+  //         if (len > 0) {
+  // //            if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
+  //             final Listener listener = getListener();
+  //             if (listener != null) {
+  //                 final byte[] data = new byte[len];
+  //                 mReadBuffer.get(data, 0, len);
+  //                 listener.onNewData(data);
+  //             }
+  //             mReadBuffer.clear();
+  //             //mDriver.purgeHwBuffers(true, false);
+  //         }
 
           // Handle outgoing data.
           byte[] outBuff = null;
