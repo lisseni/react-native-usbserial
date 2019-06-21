@@ -99,9 +99,9 @@ export class UsbSerial {
 
   read(deviceObject = {}){
     //console.log("BATRobot index.js write" + JSON.stringify(deviceObject));
-    return UsbSerialModule.readDeviceAsync(deviceObject).then((data)=>{
+    return UsbSerialModule.readDeviceAsync(deviceObject).then((data, len)=>{
       return new Promise((resolve)=>{
-        return resolve(data);
+        return resolve(data, len);
       })
     })
     .catch((err)=>{
