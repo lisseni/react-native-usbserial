@@ -308,7 +308,7 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       UsbSerialDevice usd = createUsbSerialDevice(manager, driver, portName);
       usbSerialDriverDict.put(portName, usd);
       Log.w("BATRobot java","port opened");
-      onDeviceStateChange(portName);
+      //onDeviceStateChange(portName);
       // usd.stopIoManager();
       // usd.startIoManager();
       p.resolve(usd);
@@ -428,7 +428,12 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
 
             mReadBuffer.get(data, 0, len);
             Log.w("BATRobot java readDeviceAsync","return resolve");
-            p.resolve(data);
+            WritableArray dataArray = Arguments.createArray();
+            for (int i =0; i< data.length; i++) {
+              dataArray.pushInt((data[i])&0xFF);
+
+            }
+            p.resolve(dataArray);
             //mReadBuffer.clear();
         }else{
           p.resolve(null);
