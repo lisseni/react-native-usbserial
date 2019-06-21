@@ -22,29 +22,29 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 public class UsbSerialDevice {
     public UsbSerialPort port;
     public String portName;
-    private ReactApplicationContext reactContext;
+  //  private ReactApplicationContext reactContext;
     private static final int SERIAL_TIMEOUT = 1000;
-    private SerialInputOutputManager mSerialIoManager;
-    private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
-    private final SerialInputOutputManager.Listener mListener =
-    new SerialInputOutputManager.Listener() {
-      @Override
-      public void onRunError(Exception e) {
-        Log.v("BATRobot java", "Runner stopped.");
-        //disconnect();
-      }
-      @Override
-      public void onNewData(final byte[] data) {
-        //Log.v("BATRobot java", "onNewData");
-        sendEvent(data);
-      }
-    };
+    // private SerialInputOutputManager mSerialIoManager;
+    // private final ExecutorService mExecutor = Executors.newSingleThreadExecutor();
+    // private final SerialInputOutputManager.Listener mListener =
+    // new SerialInputOutputManager.Listener() {
+    //   @Override
+    //   public void onRunError(Exception e) {
+    //     Log.v("BATRobot java", "Runner stopped.");
+    //     //disconnect();
+    //   }
+    //   @Override
+    //   public void onNewData(final byte[] data) {
+    //     //Log.v("BATRobot java", "onNewData");
+    //     sendEvent(data);
+    //   }
+    // };
 
-    private void disconnect() {
-      String UsbDisconnectName = "disconnect_"+this.portName;
-      stopIoManager();
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, this.portName);
-    }
+    // private void disconnect() {
+    //   String UsbDisconnectName = "disconnect_"+this.portName;
+    //   mSerialIoManager = null;
+    //   reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, this.portName);
+    // }
 
 
     public UsbSerialDevice(UsbSerialPort port,String portName) {
@@ -53,31 +53,31 @@ public class UsbSerialDevice {
 
     }
 
-    public void stopIoManager() {
-    if (mSerialIoManager != null) {
-      Log.i("BATRobot java", "Stopping io manager .."+this.portName);
-      mSerialIoManager.stop();
-      mSerialIoManager = null;
-    }
-  }
+  //   public void stopIoManager() {
+  //   if (mSerialIoManager != null) {
+  //     Log.i("BATRobot java", "Stopping io manager .."+this.portName);
+  //     mSerialIoManager.stop();
+  //     mSerialIoManager = null;
+  //   }
+  // }
 
-  public void startIoManager() {
-      try{
-        if (this.port == null) {
-          throw new Exception(String.format("No device opened"));
-        }
-
-        if (this.port != null) {
-          Log.v("BATRobot java", "Starting io manager .."+this.portName);
-          mSerialIoManager = new SerialInputOutputManager(this.port, mListener);
-          mExecutor.submit(mSerialIoManager);
-        }
-
-      }catch (Exception e) {
-        e.printStackTrace();
-      }
-
-    }
+  // public void startIoManager() {
+  //     try{
+  //       if (this.port == null) {
+  //         throw new Exception(String.format("No device opened"));
+  //       }
+  //
+  //       if (this.port != null) {
+  //         Log.v("BATRobot java", "Starting io manager .."+this.portName);
+  //         mSerialIoManager = new SerialInputOutputManager(this.port, mListener);
+  //         mExecutor.submit(mSerialIoManager);
+  //       }
+  //
+  //     }catch (Exception e) {
+  //       e.printStackTrace();
+  //     }
+  //
+  //   }
 
 
     public void writeAsync(String value, Promise promise) {
@@ -121,14 +121,14 @@ public class UsbSerialDevice {
         return new Exception("No port present for the UsbSerialDevice instance");
     }
 
-    private void sendEvent(byte[] data) {
-      WritableArray dataArray = Arguments.createArray();
-      String eventName = "Data" + " " + this.portName;
-      for (int i =0; i< data.length; i++) {
-        dataArray.pushInt((data[i])&0xFF);
-
-      }
-      Log.i("BATRobot java", "sendEvent! " + eventName);
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
-    }
+    // private void sendEvent(byte[] data) {
+    //   WritableArray dataArray = Arguments.createArray();
+    //   String eventName = "Data" + " " + this.portName;
+    //   for (int i =0; i< data.length; i++) {
+    //     dataArray.pushInt((data[i])&0xFF);
+    //
+    //   }
+    //   Log.i("BATRobot java", "sendEvent! " + eventName);
+    //   reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, dataArray);
+    // }
 }
