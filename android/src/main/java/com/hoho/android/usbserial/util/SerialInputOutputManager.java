@@ -152,7 +152,7 @@ public class SerialInputOutputManager implements Runnable {
     private void step() throws IOException {
         // Handle incoming data.
         if (mDriver != null){
-          int len = mDriver.read(mReadBuffer.array(), READ_WAIT_MILLIS);
+          int len = mDriver.read(mReadBuffer.array(), 200);
           if (len > 0) {
   //            if (DEBUG) Log.d("BATRobot", "Read data len=" + len);
               final Listener listener = getListener();

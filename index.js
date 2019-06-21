@@ -97,6 +97,20 @@ export class UsbSerial {
     });
   }
 
+  read(deviceObject = {}){
+    //console.log("BATRobot index.js write" + JSON.stringify(deviceObject));
+    return UsbSerialModule.readDeviceAsync(deviceObject).then((data)=>{
+      return new Promise((resolve)=>{
+        return resolve(data);
+      })
+    })
+    .catch((err)=>{
+      return new Promise((reject)=>{
+        return reject(err);
+      })
+    });
+  }
+
   close(deviceObject = {}){
     if(this.eventListener) {
       this.eventListener = undefined;
