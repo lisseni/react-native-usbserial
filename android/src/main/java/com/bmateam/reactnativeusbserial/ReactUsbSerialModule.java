@@ -1,4 +1,4 @@
-еpackage com.bmateam.reactnativeusbserial;
+package com.bmateam.reactnativeusbserial;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
