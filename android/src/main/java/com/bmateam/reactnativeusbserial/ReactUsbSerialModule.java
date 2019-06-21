@@ -56,7 +56,6 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
   private ReactApplicationContext reactContext;
   private SerialInputOutputManager mSerialIoManager;
   private SerialInputOutputManager mSerialIoManager2;
-  private final HashMap<String, SerialInputOutputManager> mSerialIoManagerDict;
   private final HashMap<String, UsbSerialPort>  mSerialPort = new HashMap<>();
   private boolean ConnectionState = false;
   private WritableArray openedDeviceArray = Arguments.createArray();
