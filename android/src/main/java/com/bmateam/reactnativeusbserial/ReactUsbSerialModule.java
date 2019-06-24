@@ -67,8 +67,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onRunError(Exception e) {
       Log.v("BATRobot java", "Runner stopped.");
-      String param = "disconnect";
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
+      // String param = "disconnect";
+      // reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
     }
     @Override
     public void onNewData(final byte[] data) {
@@ -82,8 +82,8 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
     @Override
     public void onRunError(Exception e) {
       Log.v("BATRobot java", "Runner stopped.");
-      String param = "disconnect";
-      reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
+      // String param = "disconnect";
+      // reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(UsbDisconnectName, param);
     }
     @Override
     public void onNewData(final byte[] data) {
@@ -326,11 +326,9 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       }
       UsbSerialDevice usd = usbSerialDriverDict.get(portName);
       if (usd != null){
-        usbSerialDriverDict.remove(portName);
-      //  usd.stopIoManager();
         stopIoManager(portName);
         usd.getPort().close();
-
+        usbSerialDriverDict.remove(portName);
         p.resolve("Port closed");
       }else{
         p.reject("Port wasn't opened");
