@@ -64,7 +64,7 @@ export class UsbSerial {
     let eventName = 'Data ' + deviceObject.comName;
     console.log("BATRobot index.js monitor " + eventName);
     this.eventListener = DeviceEventEmitter.addListener(eventName,function(e: Event) {
-      console.log("BATRobot index.js event! ");
+      //console.log("BATRobot index.js event! ");
       handler(e);
     });
   }
@@ -98,9 +98,9 @@ export class UsbSerial {
   }
 
   read(deviceObject = {}){
-    console.log("BATRobot index.js read" + JSON.stringify(deviceObject));
+    //console.log("BATRobot index.js read" + JSON.stringify(deviceObject));
     return UsbSerialModule.readDeviceAsync(deviceObject).then((data)=>{
-    console.log("BATRobot index.js read" + data.toString('hex'));
+    //console.log("BATRobot index.js read" + data.toString('hex'));
       return new Promise((resolve)=>{
         return resolve(data);
       })
