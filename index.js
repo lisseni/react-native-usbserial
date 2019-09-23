@@ -141,6 +141,10 @@ export class UsbSerial {
   testBind() {
     return UsbSerialModule.testBind();
   }
+  
+  testReboot() {
+    return UsbSerialModule.testReboot();
+  }
 
   flush(deviceObject = {},flushReadBuffers, flushWriteBuffers){
     return UsbSerialModule.flushBuffers(deviceObject,flushReadBuffers, flushWriteBuffers);
