@@ -205,6 +205,17 @@ public class ReactUsbSerialModule extends ReactContextBaseJavaModule {
       p.reject(e);
     }
   }
+  
+  @ReactMethod
+  public void testReboot(Promise p) {
+    try {     
+      Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"reboot\"");
+      //Process process = Runtime.getRuntime().exec("/system/xbin/su -c \"echo -n \"usb1\" > /sys/bus/usb/drivers/usb/unbind\"");
+    } catch (Exception e) {
+      p.reject(e);
+    }
+  }
+  
   @ReactMethod
   public void testBind(Promise p) {
     try {
